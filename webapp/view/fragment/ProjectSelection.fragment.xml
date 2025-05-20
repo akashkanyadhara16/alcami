@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <SelectDialog  title="Projects"  items="{/project}"
+                  search=".onProjectSearch" confirm=".onProjectVHClose">
+        <StandardListItem title="{ProjectName}" description="{ProjectID}" />
+    </SelectDialog>
+</core:FragmentDefinition>

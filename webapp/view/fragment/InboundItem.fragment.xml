@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog
+        id="inboundItemDialog"
+        title="Add Inbound Item"
+        draggable="true"
+        resizable="true"
+        afterClose=".onInboundItemCancel">
+        <VBox class="sapUiSmallMargin">
+            <Label text="Customer Material Number" required="true"/>
+            <Input
+                id="customerMaterialInput"
+                showValueHelp="true"
+                valueHelpRequest=".onCustomerMaterialValueHelp"
+                width="100%" />
+
+        </VBox>
+        <buttons>
+            <Button text="Cancel" press=".onInboundItemCancel" />
+            <Button text="Add" press=".onInboundItemAdd" />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

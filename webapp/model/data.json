@@ -1,0 +1,29 @@
+{
+  "project": [
+    { "ProjectID": "P001", "ProjectName": "Project 1", "CustomerID": "C001" },
+    { "ProjectID": "P002", "ProjectName": "Project 2", "CustomerID": "C001" },
+    { "ProjectID": "P003", "ProjectName": "Project 3", "CustomerID": "C002" }
+  ],
+
+
+
+
+  "customerMaterial": [
+    {
+      "customerMaterialNumber": "CUST001",
+      "materialDescription": "Aluminum Sheet",
+      "uom": "kg"
+      
+    },
+    {
+      "customerMaterialNumber": "CUST002",
+      "materialDescription": "Steel Rod",
+      "uom": "m"
+    },
+    {
+      "customerMaterialNumber": "CUST003",
+      "materialDescription": "Plastic Granules",
+      "uom": "kg"
+    }
+  ]
+}
