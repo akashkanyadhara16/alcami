@@ -16,7 +16,7 @@
         </VBox>
         <buttons>
             <Button text="Cancel" press=".onInboundItemCancel" />
-            <Button text="Add" press=".onInboundItemAdd" />
+            <Button text="Add" press=".InboundonAddPress" />
         </buttons>
     </Dialog>
 </core:FragmentDefinition>
