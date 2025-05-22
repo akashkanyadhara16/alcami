@@ -30,13 +30,6 @@ sap.ui.define([
             });
             this.getView().setModel(oSampleModel, "SampleModel");
 
-            if (!this.getView().getModel("InputItemsModel")) {
-                const oInputItemsModel = new JSONModel({
-                    "ItemDetailsSet": []
-                });
-                this.getView().setModel(oInputItemsModel, "InputItemsModel");
-            }
-
             this.getView().byId("customer").setValue("C001");
         },
 
@@ -96,12 +89,11 @@ sap.ui.define([
             var aFiles = oEvent.getParameter("files");
             var oModel = this.getView().getModel("SampleModel");
             var aAttachments = oModel.getProperty("/AttachmentSet") || [];
-            // console.log("aFiles", aFiles);
-            // console.log("lenght", aFiles.length);
+
             for (var i = 0; i < aFiles.length; i++) {
                 var file = aFiles[i];
                 var reader = new FileReader();
- 
+
                 reader.onload = (function (file) {
                     return function (e) {
                         aAttachments.push({
@@ -109,15 +101,13 @@ sap.ui.define([
                             Mimetype: file.type,
                             Content: e.target.result,
                             Documentsize: file.size,
- 
                         });
                         oModel.setProperty("/AttachmentSet", aAttachments);
                     };
                 })(file);
- 
+
                 reader.readAsDataURL(file); // Read file as Base64
             }
-            // this.getView().byId("attachment").setValue("");
             MessageToast.show("Attachment Added");
             this.onUploadCompleted();
         },
@@ -131,7 +121,7 @@ sap.ui.define([
 
         // 8. onDeleteSelected: Delete selected files from attachments table
         onDeleteSelected: function () {
-            const oTable = this.getView().byId("fileTable1");
+            const oTable = this.byId("fileTable1");
             if (!oTable) {
                 MessageToast.show("File table not found.");
                 return;
@@ -179,16 +169,47 @@ sap.ui.define([
             var oTable = this.byId("OIMTable");
             var oModel = this.getView().getModel("InputItemsModel");
             var aItems = oModel.getProperty("/InboundItemset");
-            var aSelectedIndices = oTable.getSelectedIndices();
-
-            // Remove selected items
-            aSelectedIndices.sort((a, b) => b - a).forEach(function (iIndex) {
-                aItems.splice(iIndex, 1);
+            var aSelectedItems = oTable.getSelectedItems();
+        
+            if (!oTable || !oModel) {
+                MessageToast.show("Table or model not found.");
+                return;
+            }
+        
+            if (aSelectedItems.length === 0) {
+                MessageToast.show("No items selected for deletion.");
+                return;
+            }
+        
+            // Filter out selected items from data model
+            var aFilteredItems = aItems.filter(function (item) {
+                // Check if this item is selected by comparing with selected items context path
+                return !aSelectedItems.some(function (oSelectedItem) {
+                    var oContext = oSelectedItem.getBindingContext("InputItemsModel");
+                    return oContext && oContext.getPath() === oModel.getContext("/").getPath() + item.Path; // Not ideal, see below
+                });
             });
-
+        
+            // Since items array doesn't have 'Path' property, we need to identify selected items using binding context objects
+        
+            // A better approach is:
+            // Remove each selected item's binding context object from aItems
+            aSelectedItems.forEach(function (oSelectedItem) {
+                var sPath = oSelectedItem.getBindingContext("InputItemsModel").getPath();
+                // sPath looks like "/InboundItemset/0", extract index:
+                var iIndex = parseInt(sPath.substring(sPath.lastIndexOf('/') + 1));
+                if (!isNaN(iIndex)) {
+                    aItems.splice(iIndex, 1);
+                }
+            });
+        
             oModel.setProperty("/InboundItemset", aItems);
             oTable.removeSelections();
+        
+            MessageToast.show("Selected items deleted successfully.");
         },
+        
+
 
         // 11. onSelectedLineInventoryItems: Inventory items table selection
         onSelectedLineInventoryItems: function (oEvent) {
@@ -199,7 +220,6 @@ sap.ui.define([
         },
 
         // --- Additional/Fragment-related Functions ---
-
         onDateToPlaceConditionsChange: function (oEvent) {
             this._handleDateChange(oEvent);
         },
@@ -223,77 +243,51 @@ sap.ui.define([
             }
         },
 
-        onAddItem: function () {
-            if (!this._oInboundItemDialog) {
-                this._oInboundItemDialog = sap.ui.xmlfragment("alcami.view.fragment.inboundItem", this);
-                this.getView().addDependent(this._oInboundItemDialog);
-            }
-            this._oInboundItemDialog.open();
-        },
+        
 
         InboundonAddPress: function () {
-            var oModel = this.getView().getModel("InputItemsModel");
-            var aItems = oModel.getProperty("/InboundItemset");
-            // Create a new item with default values
-            var oNewItem = {
-                Customermaterial: "", // You can set a default value if needed
-                Materialdescription: "", // You can set a default value if needed
-                Uom: "", // You can set a default value if needed
-                OrderQuantity: 0, // Default to 0 instead of an empty string
-                StorageConditions: "", // You can set a default value if needed
-                Notes: "" // You can set a default value if needed
+            const oModel = this.getView().getModel("InputItemsModel");
+            const aItems = oModel.getProperty("/InboundItemset");
+
+            const sCustomerMaterialNumber = sap.ui.getCore().byId("customerMaterialInput").getValue();
+        
+            // const sCustomerMaterialNumber = this._oInboundItemDialog.byId("customerMaterialInput").getValue();
+            if (!sCustomerMaterialNumber) {
+                MessageToast.show("Please enter or select a Customer Material Number.");
+                return;
+            }
+        
+            // Get main model that has data.json loaded
+            const oMainModel = this.getView().getModel();
+            const aCustomerMaterials = oMainModel.getProperty("/customerMaterial") || [];
+        
+            // Find matching material details for the entered customerMaterialNumber
+            const oMaterial = aCustomerMaterials.find(function(item) {
+                return item.customerMaterialNumber === sCustomerMaterialNumber;
+            });
+        
+            if (!oMaterial) {
+                MessageToast.show("Customer Material Number not found in data.");
+                return;
+            }
+        
+            // Create new item with details from lookup and default values for others
+            const oNewItem = {
+                Customermaterial: sCustomerMaterialNumber,
+                Materialdescription: oMaterial.materialDescription,
+                Uom: oMaterial.uom,
+                OrderQuantity: 0,
+                StorageConditions: "",
+                Notes: ""
             };
-            // Push the new item to the array
+        
             aItems.push(oNewItem);
-            // Update the model
             oModel.setProperty("/InboundItemset", aItems);
-            
-            // Optionally, you can open the dialog for the user to fill in the details
-            if (!this._oInboundItemDialog) {
-                this._oInboundItemDialog = sap.ui.xmlfragment("alcami.view.fragment.InboundItem", this);
-                this.getView().addDependent(this._oInboundItemDialog);
-    }
-    this._oInboundItemDialog.open();
-},
-
-        // onInboundItemAdd: function () {
-        //     const oDialog = this.getView().byId("inboundItemDialog");
-        //     if (!oDialog) {
-        //         MessageToast.show("Dialog not found");
-        //         return;
-        //     }
-
-        //     const oInput = oDialog.byId("customerMaterialInput");
-        //     if (!oInput) {
-        //         MessageToast.show("Input control not found");
-        //         return;
-        //     }
-
-        //     const sCustomerMaterialNumber = oInput.getValue();
-
-        //     if (!sCustomerMaterialNumber) {
-        //         MessageToast.show("Please enter Customer Material Number");
-        //         return;
-        //     }
-
-        //     const oModel = this.getView().getModel("InputItemsModel");
-        //     const aItems = oModel.getProperty("/ItemDetailsSet") || [];
-
-        //     const oNewItem = {
-        //         Customermaterial: sCustomerMaterialNumber,
-        //         Materialdescription: "",
-        //         Uom: "",
-        //         OrderQuantity: 0,
-        //         StorageConditions: "",
-        //         Notes: ""
-        //     };
-
-        //     aItems.push(oNewItem);
-        //     oModel.setProperty("/ItemDetailsSet", aItems);
-
-        //     MessageToast.show("Item added successfully!");
-        //     oDialog.close();
-        // },
+        
+            this._oInboundItemDialog.close();
+            MessageToast.show("Item added successfully.");
+        },
+        
 
         onInboundItemCancel: function () {
             if (this._oInboundItemDialog) {
@@ -303,17 +297,10 @@ sap.ui.define([
 
         onCustomerMaterialValueHelp: function () {
             if (!this._customerMaterialDialog) {
-                Fragment.load({
-                    name: "alcami.view.fragment.CustomerMaterialValueHelp",
-                    controller: this
-                }).then(oDialog => {
-                    this._customerMaterialDialog = oDialog;
-                    this.getView().addDependent(this._customerMaterialDialog);
-                    this._customerMaterialDialog.open();
-                });
-            } else {
-                this._customerMaterialDialog.open();
+                this._customerMaterialDialog = sap.ui.xmlfragment("alcami.view.fragment.CustomerMaterialValueHelp", this);
+                this.getView().addDependent(this._customerMaterialDialog);
             }
+            this._customerMaterialDialog.open();
         },
 
         onCustomerMaterialSearch: function (oEvent) {

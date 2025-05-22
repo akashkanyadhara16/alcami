@@ -103,7 +103,7 @@
                 <VBox class="sapUiSmallMargin">
                     <VBox>
                         <Label text="Attached Documents" design="Bold" id="uploadlabel1" />
-                        <Table id="fileTable1" items="{path: 'SampleModel>/AttachmentSet'}" mode="MultiSelect" selectionChange=".onSelectionChange">
+                        <Table id="fileTable1" items="{SampleModel>/AttachmentSet}" mode="MultiSelect" selectionChange=".onSelectionChange">
                             <headerToolbar>
                                 <Toolbar>
                                     <u:FileUploader 
@@ -281,52 +281,50 @@
 
             <!-- Step 2 -->
             <WizardStep id="OrderInventory" validated="true" title="Inbound Order Item Details">
-    <ScrollContainer width="100%" height="300px" horizontal="true" focusable="true">
-        <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange="onSelectedLineInventoryItems" mode="MultiSelect">
-            <headerToolbar>
-                <OverflowToolbar>
-                    <ToolbarSpacer/>
-                    <Button text="Add" type="Emphasized" press="onAddPress" />
-                    <Button text="Delete" type="Emphasized" press="onDeleteSelectedItems" />
-                </OverflowToolbar>
-            </headerToolbar>
-            <columns>
-                <Column hAlign="Begin" width="15rem">
-                    <Label text="Customer Material Number" wrapping="true"/>
-                </Column>
-                <Column hAlign="Begin" width="10rem">
-                    <Label text="Material Description" wrapping="true"/>
-                </Column>
-                <Column hAlign="Begin" width="7rem">
-                    <Label text="UOM" wrapping="true"/>
-                </Column>
-                <Column hAlign="Begin" width="8rem">
-                    <Label id="orderQuantityLabel" text="Order Quantity" design="Bold" wrapping="true"/>
-                </Column>
-                <Column hAlign="Begin" width="8rem">
-                    <Label id="storageConditionsLabel" text="Storage Conditions" design="Bold" wrapping="true"/>
-                </Column>
-                <Column hAlign="Begin" width="8rem">
-                    <Label id="notesLabel" text="Notes" wrapping="true"/>
-                </Column>
-            </columns>
-            <items>
-                <ColumnListItem>
-                    <cells>
-                        <Input value="{InputItemsModel>Customermaterial}" editable="false"/>
-                        <Input value="{InputItemsModel>Materialdescription}" editable="false"/>
-                        <Input value="{InputItemsModel>Uom}" editable="false"/>
-                        <Input id="orderQuantityId" value="{InputItemsModel>OrderQuantity}" editable="true" maxLength="10" />
-                        <Input id="storageConditionsId" value="{InputItemsModel>StorageConditions}" editable="true" maxLength="50" valueHelpRequest=".onStorageConditionsVH" showValueHelp="true" />
-                        <Input id="notesId" value="{InputItemsModel>Notes}" editable="true" maxLength="500"/>
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
-    </ScrollContainer>
-</WizardStep>
-
+                <ScrollContainer width="100%" height="300px" horizontal="true" focusable="true">
+                    <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange=".onSelectedLineInventoryItems" mode="MultiSelect">
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <ToolbarSpacer/>
+                                <Button text="Add" type="Emphasized" press=".onAddPress" />
+                                <Button text="Delete" type="Emphasized" press=".onDeleteSelectedItems" />
+                            </OverflowToolbar>
+                        </headerToolbar>
+                        <columns>
+                            <Column hAlign="Begin" width="15rem">
+                                <Label text="Customer Material Number" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="10rem">
+                                <Label text="Material Description" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="7rem">
+                                <Label text="UOM" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label id="orderQuantityLabel" text="Order Quantity" design="Bold" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label id="storageConditionsLabel" text="Storage Conditions" design="Bold" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label id="notesLabel" text="Notes" wrapping="true"/>
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <Input value="{InputItemsModel>Customermaterial}" editable="false"/>
+                                    <Input value="{InputItemsModel>Materialdescription}" editable="false"/>
+                                    <Input value="{InputItemsModel>Uom}" editable="false"/>
+                                    <Input id="orderQuantityId" value="{InputItemsModel>OrderQuantity}" editable="true" maxLength="10" />
+                                    <Input id="storageConditionsId" value="{InputItemsModel>StorageConditions}" editable="true" maxLength="50" valueHelpRequest=".onStorageConditionsVH" showValueHelp="true" />
+                                    <Input id="notesId" value="{InputItemsModel>Notes}" editable="true" maxLength="500"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </ScrollContainer>
+            </WizardStep>
         </Wizard>
     </Page>
 </mvc:View>
-
