@@ -1,0 +1,5 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <SelectDialog  title="Select Storage Conditions"  items="{/storageCondition}" confirm="onStorageConditionVHClose">
+        <StandardListItem title="{temp}"  />
+    </SelectDialog>
+</core:FragmentDefinition>

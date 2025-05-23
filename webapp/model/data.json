@@ -5,6 +5,16 @@
     { "ProjectID": "P003", "ProjectName": "Project 3", "CustomerID": "C002" }
   ],
 
+  
+"storageCondition": [
+   { "temp": "0°C to 10°C" },
+   { "temp": "2°C to 8°C" },
+   { "temp": "5°C to 15°C" },
+   { "temp": "1°C to 6°C" },
+   { "temp": "3°C to 12°C" }
+  ],
+  
+
 
 
 
