@@ -21,6 +21,8 @@ sap.ui.define([
             });
             this.getView().setModel(oModel1, "InputItemsModel");
 
+            // validate the each wizard
+
             const oToday = new Date();
             this._setMinDate(this.getView().byId("arrivalDateInput"), oToday);
             this._setMinDate(this.getView().byId("dateToPlaceConditionsInput"), oToday);
@@ -368,6 +370,50 @@ sap.ui.define([
             this._oInputField = null; // Clear the reference
             oEvent.getSource().getBinding("items").filter([]); // Clear filters
         },
+
+        onReviewPress: function() {
+            var oView = this.getView();
+            var bValid = true;
+        
+            // Validate Step 1
+            var aRequiredFieldsStep1 = [
+                oView.byId("customer"),
+                oView.byId("projectInput"),
+                oView.byId("carrierInput"),
+                oView.byId("arrivalDateInput"),
+                oView.byId("shipFromInput"),
+                oView.byId("shippingTemperatureInput"),
+                oView.byId("shipmentFlexibilityInput"),
+                oView.byId("shippingMaterialProviderInput"),
+                oView.byId("dimensionsInput"),
+                oView.byId("TemperatureDeviceProvider"),
+                oView.byId("TDQ"),
+                oView.byId("TDD"),
+                oView.byId("dateToPlaceConditionsInput")
+            ];
+        
+            aRequiredFieldsStep1.forEach(function(oField) {
+                if (!oField.getValue()) {
+                    oField.setValueState("Error");
+                    bValid = false;
+                } else {
+                    oField.setValueState("None");
+                }
+            });
+        
+            // Validate Step 2 (if needed)
+            // You can add similar validation for Step 2 if there are required fields
+        
+            if (bValid) {
+                // Proceed to the next step or show a success message
+                sap.m.MessageToast.show("All required fields are valid!");
+            } else {
+                // Show an error message
+                sap.m.MessageToast.show("Please fill all required fields.");
+            }
+        },
+                
+
 
         // --- Private/Helper Functions ---
         // Sets the minimum date for a DatePicker control

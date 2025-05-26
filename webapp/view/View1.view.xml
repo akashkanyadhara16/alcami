@@ -280,7 +280,7 @@
             </WizardStep>
 
             <!-- Step 2 -->
-            <WizardStep id="OrderInventory" validated="true" title="Inbound Order Item Details">
+            <WizardStep id="OrderInventory" validated="false" title="Inbound Order Item Details">
                 <ScrollContainer width="100%" height="300px" horizontal="true" focusable="true">
                     <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange=".onSelectedLineInventoryItems" mode="MultiSelect">
                         <headerToolbar>
@@ -324,7 +324,17 @@
                         </items>
                     </Table>
                 </ScrollContainer>
+                <Toolbar>
+                    
+                    <Button
+                        text="Review"
+                        type="Emphasized"
+                        press=".onReviewPress"
+                        id="reviewButton"
+                    />
+                </Toolbar>
             </WizardStep>
+            
         </Wizard>
     </Page>
 </mvc:View>
