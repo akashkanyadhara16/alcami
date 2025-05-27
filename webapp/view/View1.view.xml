@@ -8,12 +8,15 @@
     xmlns:core="sap.ui.core"
     xmlns:upload="sap.m.upload"
     xmlns:u="sap.ui.unified"
+   xmlns:form="sap.ui.layout.form"
+
+
 >
     <Page
         id="page"
         title="Alcami"
     >
-        <Wizard id="wizard">
+        <Wizard id="wizard" complete="onReviewPress">
             <!-- Step 1 -->
             <WizardStep
                 id="step1"
@@ -29,6 +32,7 @@
                                 id="customer"
                                 width="100%"
                                 placeholder="Enter Customer ID"
+                                value="{InputItemsModel>/CustomerNumber}"
                             />
                         </VBox>
                         <VBox width="30%">
@@ -39,15 +43,11 @@
                                 width="100%"
                                 showValueHelp="true"
                                 valueHelpRequest=".onOpenValueHelp"
+                                value="{InputItemsModel>/ProjectName}"
                             />
                         </VBox>
-                        <VBox width="30%">
-                            <Label text="Reference Number" />
-                            <Input
-                                id="referenceInput"
-                                placeholder="Reference Number"
-                                width="100%"
-                            />
+                        <VBox width="30%"> <Label text="Reference Number" />
+                            <Input id="referenceInput" placeholder="Reference Number" width="100%" value="{InputItemsModel>/ReferenceNumber}" />
                         </VBox>
                     </HBox>
 
@@ -61,9 +61,10 @@
                                 required="true"
                                 width="100%"
                                 change=".onCarrierChange"
+                                selectedKey="{InputItemsModel>/CarrierName}"
                             >
                                 <items>
-                                    <core:Item key="alcami" text="Alcami Courier" />
+                                    <core:Item key="Alcami Courier" text="Alcami Courier" />
                                     <core:Item key="ups_air" text="UPS Air" />
                                     <core:Item key="ups_ground" text="UPS Ground" />
                                     <core:Item key="ups_freight" text="UPS Freight" />
@@ -87,6 +88,7 @@
                                 placeholder="Arrival Date"
                                 width="100%"
                                 change=".onArrivalDateChange"
+                                value="{InputItemsModel>/SelectedDate}"
                             />
                         </VBox>
                         <VBox width="30%">
@@ -95,6 +97,7 @@
                                 id="shipFromInput"
                                 placeholder="Ship From"
                                 width="100%"
+                                value="{InputItemsModel>/ShipFromAddress}"
                             />
                         </VBox>
                     </HBox>
@@ -119,7 +122,7 @@
                             </headerToolbar>
                             <columns>
                                 <Column>
-                                    <Text text="File Name"/>
+                                    <Text text="File Name" />
                                 </Column>
                                 <Column>
                                     <Text text="File Type"/>
@@ -128,7 +131,7 @@
                             <items>
                                 <ColumnListItem>
                                     <cells>
-                                        <Text text="{SampleModel>Filename}"/>
+                                        <Text text="{SampleModel>Filename}" />
                                         <Text text="{SampleModel>Mimetype}"/>
                                     </cells>
                                 </ColumnListItem>
@@ -144,6 +147,7 @@
                                 id="shippingTemperatureInput"
                                 width="100%"
                                 placeholder="Select Shipping Temperature"
+                                selectedKey="{InputItemsModel>/ShippingTemparature}"
                             >
                                 <items>
                                     <core:Item key="Unconditioned" text="Unconditioned" />
@@ -157,6 +161,7 @@
                             <ComboBox
                                 id="shipmentFlexibilityInput"
                                 width="100%"
+                                selectedKey="{InputItemsModel>/ShipmentFlexibility}"
                             >
                                 <items>
                                     <core:Item key="Critical" text="Critical - Date Not Flexible" />
@@ -173,10 +178,10 @@
                                 id="stability"
                                 width="100%"
                                 change=".onStabilityChange"
+                                selectedKey="{InputItemsModel>/Stability}"
                             >
                                 <items>
-                                    <core:Item key="Carrier" text="Carrier" />
-                                    <core:Item key="Customer" text="Customer" />
+                                    <core:Item key="Yes" text="Yes" />
                                     <core:Item key="no" text="No" />
                                 </items>
                             </ComboBox>
@@ -190,6 +195,7 @@
                             <ComboBox
                                 id="shippingMaterialProviderInput"
                                 width="100%"
+                                selectedKey="{InputItemsModel>/ShippingMaterialProvider}"
                             >
                                 <items>
                                     <core:Item key="Carrier" text="Carrier" />
@@ -204,6 +210,7 @@
                                 id="dimensionsInput"
                                 placeholder="Select Dimensions"
                                 width="100%"
+                                value="{InputItemsModel>/DimensionsandQuanityofShippers}"
                             />
                         </VBox>
                         <VBox width="30%">
@@ -212,6 +219,7 @@
                                 id="TemperatureDeviceProvider"
                                 width="100%"
                                 change=".onTemperatureDeviceProviderChange"
+                                selectedKey="{InputItemsModel>/TemperatureDeviceProvider}"
                             >
                                 <items>
                                     <core:Item key="Customer" text="Customer" />
@@ -229,6 +237,7 @@
                             <ComboBox
                                 id="TDQ"
                                 width="100%"
+                                selectedKey="{InputItemsModel>/TemperatureDeviceQuanitiy}"
                             >
                                 <items>
                                     <core:Item key="1PerShippingContainer" text="1 Per Shipping Container" />
@@ -242,6 +251,7 @@
                             <ComboBox
                                 id="TDD"
                                 width="100%"
+                                selectedKey="{InputItemsModel>/TemperatureDeviceDisposition}"
                             >
                                 <items>
                                     <core:Item key="AlcamitoDispose" text="Alcami to Dispose" />
@@ -261,6 +271,8 @@
                                 id="specialInstructionsInput"
                                 width="100%"
                                 placeholder="Enter any special instructions here"
+                                value="{InputItemsModel>/SpecialInstructions}"
+
                             />
                         </VBox>
                     </HBox>
@@ -273,6 +285,7 @@
                                 id="dateToPlaceConditionsInput"
                                 placeholder="Select Date"
                                 width="100%"
+                                value="{InputItemsModel>/DatetoPlaceIntoCondition}"
                             />
                         </VBox>
                     </HBox>
@@ -280,7 +293,7 @@
             </WizardStep>
 
             <!-- Step 2 -->
-            <WizardStep id="OrderInventory" validated="false" title="Inbound Order Item Details">
+            <WizardStep id="OrderInventory" validated="true" title="Inbound Order Item Details" >
                 <ScrollContainer width="100%" height="300px" horizontal="true" focusable="true">
                     <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange=".onSelectedLineInventoryItems" mode="MultiSelect">
                         <headerToolbar>
@@ -324,17 +337,130 @@
                         </items>
                     </Table>
                 </ScrollContainer>
-                <Toolbar>
-                    
-                    <Button
-                        text="Review"
-                        type="Emphasized"
-                        press=".onReviewPress"
-                        id="reviewButton"
-                    />
-                </Toolbar>
+                
             </WizardStep>
             
-        </Wizard>
+</Wizard>
+    <Page id="wizardReviewPage" showHeader="true" title="Review Order Details" visible="false">
+            <content>
+                <form:SimpleForm title="Inbound Headers" labelSpanXL="6" labelSpanL="4" labelSpanM="6" labelSpanS="12" editable="false"
+                    layout="ResponsiveGridLayout">
+                    <form:content>
+                        <Label text="Customer" required="true"/>
+                            <Text text="{InputItemsModel>/CustomerNumber}"/>
+                            <Label text="Project Name" required="true"/>
+                            <Text text="{InputItemsModel>/ProjectName}"/>
+                            <Label text="Reference Number" />
+                            <Text text="{InputItemsModel>/ReferenceNumber}"/>
+                            <Label text="Carrier Name" required="true"/>
+                            <Text text="{InputItemsModel>/CarrierName}"/>
+                            <Label text="SelectedDate" required="true"/>
+                            <Text text="{InputItemsModel>/SelectedDate}"/>
+                            <Label text="Ship From Address" required="true"/>
+                            <Text text="{InputItemsModel>/ShipFromAddress}"/>
+                            <Label text="Shipping Temperature" required="true"/>
+                            <Text text="{InputItemsModel>/ShippingTemparature}"/>
+                            <Label text="ShipmentFlexibility" required="true"/>
+                            <Text text="{InputItemsModel>/ShipmentFlexibility}"/>
+                            <Label text="Shipping Material Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Text text="{InputItemsModel>/ShippingMaterialProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Label text="Stability" />
+                            <Text text="{InputItemsModel>/Stability}"/>
+                            <Label text="Dimensions and Quantity of Shippers" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Text text="{InputItemsModel>/DimensionsandQuanityofShippers}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Label text="Temperature Device Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Text text="{InputItemsModel>/TemperatureDeviceProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                            <Label text="Temperature Device Quantity" required="true"/>
+                            <Text text="{InputItemsModel>/TemperatureDeviceQuanitiy}"/>
+                            <Label text="Temperature Device Disposition" required="true"/>
+                            <Text text="{InputItemsModel>/TemperatureDeviceDisposition}"/>
+                            <Label text="Special Instruction for ShipCondition" />
+                            <Text text="{InputItemsModel>/SpecialInstructions}"/>
+                            <Label text="DatetoPlaceIntoCondition" required="true" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
+                            <Text text="{InputItemsModel>/DatetoPlaceIntoCondition}" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
+
+                    </form:content>
+                </form:SimpleForm>
+                
+                <Table items="{path: 'SampleModel>/AttachmentSet'}">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Attached Documents"/>
+                            <ToolbarSpacer/>
+                            <Button text="Edit"  press="editAttachedItems"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="File Name"/>
+                        </Column>
+                        <Column>
+                            <Text text="File Type"/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SampleModel>Filename}"/>
+                                <Text text="{SampleModel>Mimetype}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+
+                <ScrollContainer width="100%" horizontal="true" focusable="true">
+                    <Table items="{InputItemsModel>/InboundItemset}"  >
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <Title text="Inbound Items"/>
+                                <ToolbarSpacer/>
+                                <Button text="Edit"  press="editInboundItems"/>
+                            </OverflowToolbar>
+                        </headerToolbar>
+                        <columns>
+                            <Column hAlign="Begin" width="15rem">
+                                <Label text="Customer Material Number" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="10rem">
+                                <Label text="Material Description" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="7rem">
+                                <Label text="UOM" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Order Quantity" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Storage Conditions" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Notes" wrapping="true"/>
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="{InputItemsModel>Customermaterial}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Materialdescription}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Uom}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>OrderQuantity}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>StorageConditions}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Notes}" wrapping="true"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </ScrollContainer>
+            </content>
+            <footer>
+                <Bar>
+                    <contentRight>
+                        <Button text="Submit" press="handleWizardSubmit" type="Emphasized"/>
+                        <Button text="Cancel" press="handleWizardCancel"/>
+                    </contentRight>
+                </Bar>
+            </footer>
+        </Page>
     </Page>
 </mvc:View>

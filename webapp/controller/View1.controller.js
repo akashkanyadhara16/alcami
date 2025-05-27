@@ -21,18 +21,27 @@ sap.ui.define([
             });
             this.getView().setModel(oModel1, "InputItemsModel");
 
-            // validate the each wizard
-
-            const oToday = new Date();
-            this._setMinDate(this.getView().byId("arrivalDateInput"), oToday);
-            this._setMinDate(this.getView().byId("dateToPlaceConditionsInput"), oToday);
-
             const oSampleModel = new JSONModel({
                 "AttachmentSet": []
             });
             this.getView().setModel(oSampleModel, "SampleModel");
 
+
+            // var oModel2 = new sap.ui.model.json.JSONModel({
+            //     fields: aMissingFields.map(function(label) {
+            //         return { title: label };
+            //     })
+            // });
+            // this._oMissingFieldsDialog.setModel(oModel2);
+            
+
+            const oToday = new Date();
+            this._setMinDate(this.getView().byId("arrivalDateInput"), oToday);
+            this._setMinDate(this.getView().byId("dateToPlaceConditionsInput"), oToday);
+
             this.getView().byId("customer").setValue("C001"); // Set default customer value
+
+
         },
 
         // 1. onOpenValueHelp: Opens the project value help dialog and applies filters based on customer input
@@ -56,7 +65,7 @@ sap.ui.define([
         onCarrierChange: function (oEvent) {
             const sSelectedKey = oEvent.getSource().getSelectedKey();
             const oView = this.getView();
-            this._toggleVisibility(sSelectedKey === "alcami", [
+            this._toggleVisibility(sSelectedKey === "Alcami Courier", [
                 oView.byId("shippingMaterialProviderInput"),
                 oView.byId("dimensionsInput"),
                 oView.byId("TemperatureDeviceProvider")
@@ -90,6 +99,7 @@ sap.ui.define([
         onUploadDocuments: function (oEvent) {
             var aFiles = oEvent.getParameter("files");
             var oModel = this.getView().getModel("SampleModel");
+
             var aAttachments = oModel.getProperty("/AttachmentSet") || [];
 
             for (var i = 0; i < aFiles.length; i++) {
@@ -372,46 +382,143 @@ sap.ui.define([
         },
 
         onReviewPress: function() {
-            var oView = this.getView();
+                        var oView = this.getView();
+                        var bValid = true;
+                        var aMissingFields = [];
+
+                        var aRequiredFieldsStep1 = [
+                            { id: "customer", label: "Customer" },
+                            { id: "projectInput", label: "Project" },
+                            { id: "carrierInput", label: "Carrier" },
+                            { id: "arrivalDateInput", label: "Arrival Date" },
+                            { id: "shipFromInput", label: "Ship From" },
+                            { id: "shippingTemperatureInput", label: "Shipping Temperature" },
+                            { id: "shipmentFlexibilityInput", label: "Shipment Flexibility" },
+                            { id: "shippingMaterialProviderInput", label: "Shipping Material Provider" },
+                            { id: "dimensionsInput", label: "Dimensions" },
+                            { id: "TemperatureDeviceProvider", label: "Temperature Device Provider" },
+                            { id: "TDQ", label: "TDQ" },
+                            { id: "TDD", label: "TDD" },
+                            { id: "dateToPlaceConditionsInput", label: "Date to Place Conditions" }
+                        ];
+
+                        aRequiredFieldsStep1.forEach(function(oFieldInfo) {
+                            var oField = oView.byId(oFieldInfo.id);
+                            if (!oField.getValue()) {
+                                oField.setValueState("Error");
+                                aMissingFields.push(oFieldInfo.label);
+                                bValid = false;
+                            } else {
+                                oField.setValueState("None");
+                            }
+                        });
+
+                        if (bValid) {
+                            this.onReviewPress1();
+                        } else {
+                            this._showMissingFieldsFragment(aMissingFields);
+                        }
+                    },
+
+                    _showMissingFieldsFragment: function(aMissingFields) {
+                        const oView = this.getView();
+                    
+                        if (!this._oMissingFieldsDialog) {
+                            this._oMissingFieldsDialog = sap.ui.xmlfragment(oView.getId(), "alcami.view.fragment.MissingFieldsDialog", this);
+                            oView.addDependent(this._oMissingFieldsDialog);
+                        }
+                    
+                        const oModel = new sap.ui.model.json.JSONModel({
+                            fields: aMissingFields.map(function(label) {
+                                return { title: label };
+                            })
+                        });
+                        this._oMissingFieldsDialog.setModel(oModel);
+                    
+                        this._oMissingFieldsDialog.open();
+                    },
+                    
+
+                    onCloseMissingFieldsDialog: function() {
+                        this._oMissingFieldsDialog.close();
+                    },
+
+       
+
+        onReviewPress1: function() {
+            var oWizardReviewPage = this.getView().byId("wizardReviewPage");
+            oWizardReviewPage.setVisible(true);
+        
+            var oWizard = this.getView().byId("wizard");
+            var oWizardStep1 = oWizard.getSteps()[0];
+            var oWizardStep2 = oWizard.getSteps()[1];
+        
+            // Validate required fields in WizardStep1
+            var bValidStep1 = this.validateWizardStep1(oWizardStep1);
+            // Validate required fields in WizardStep2
+            var bValidStep2 = this.validateWizardStep2(oWizardStep2);
+        
+            // If any of the steps are invalid, do not proceed
+            if (!bValidStep1 || !bValidStep2) {
+                MessageToast.show("Please fill all required fields before proceeding to review."); // Notify user
+                return;
+            }
+        
+            // If all fields are valid, collect data and show the review page
+            this.collectDataForReview();
+            this.showReviewPage();
+        },
+        
+        
+        validateWizardStep1: function(oWizardStep) {
+            var aControls = oWizardStep.getContent();
             var bValid = true;
         
-            // Validate Step 1
-            var aRequiredFieldsStep1 = [
-                oView.byId("customer"),
-                oView.byId("projectInput"),
-                oView.byId("carrierInput"),
-                oView.byId("arrivalDateInput"),
-                oView.byId("shipFromInput"),
-                oView.byId("shippingTemperatureInput"),
-                oView.byId("shipmentFlexibilityInput"),
-                oView.byId("shippingMaterialProviderInput"),
-                oView.byId("dimensionsInput"),
-                oView.byId("TemperatureDeviceProvider"),
-                oView.byId("TDQ"),
-                oView.byId("TDD"),
-                oView.byId("dateToPlaceConditionsInput")
-            ];
-        
-            aRequiredFieldsStep1.forEach(function(oField) {
-                if (!oField.getValue()) {
-                    oField.setValueState("Error");
-                    bValid = false;
-                } else {
-                    oField.setValueState("None");
+            aControls.forEach(function(oControl) {
+                if (oControl instanceof sap.ui.core.Input || oControl instanceof sap.ui.core.ComboBox) {
+                    if (oControl.getRequired() && !oControl.getValue()) {
+                        oControl.setValueState("Error");
+                        bValid = false;
+                    } else {
+                        oControl.setValueState("None");
+                    }
                 }
             });
         
-            // Validate Step 2 (if needed)
-            // You can add similar validation for Step 2 if there are required fields
-        
-            if (bValid) {
-                // Proceed to the next step or show a success message
-                sap.m.MessageToast.show("All required fields are valid!");
-            } else {
-                // Show an error message
-                sap.m.MessageToast.show("Please fill all required fields.");
-            }
+            return bValid;
         },
+        
+        validateWizardStep2: function(oWizardStep) {
+            var aControls = oWizardStep.getContent();
+            var bValid = true;
+        
+            aControls.forEach(function(oControl) {
+                if (oControl.getRequired()) {
+                    if (!oControl.getValue()) {
+                        oControl.setValueState("Error");
+                        bValid = false;
+                    } else {
+                        oControl.setValueState("None");
+                    }
+                }
+            });
+        
+            return bValid;
+        },
+        
+        
+        showReviewPage: function() {
+            var oReviewPage = this.getView().byId("wizardReviewPage");
+            if (!oReviewPage) {
+                oReviewPage = sap.ui.xmlview("ReviewPage");
+                this.getView().addDependent(oReviewPage);
+            }
+        
+            oReviewPage.setVisible(true);
+        },
+        
+        
+        
                 
 
 

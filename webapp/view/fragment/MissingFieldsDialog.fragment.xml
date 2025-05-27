@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <Dialog title="Missing Required Fields" id="missingFieldsDialog">
+        <List id="missingFieldsList" items="{/fields}">
+    <StandardListItem title="{title}" />
+</List>
+
+
+        <endButton>
+            <Button text="OK" press=".onCloseMissingFieldsDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
