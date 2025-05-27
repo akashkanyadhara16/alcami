@@ -24,16 +24,7 @@ sap.ui.define([
             const oSampleModel = new JSONModel({
                 "AttachmentSet": []
             });
-            this.getView().setModel(oSampleModel, "SampleModel");
-
-
-            // var oModel2 = new sap.ui.model.json.JSONModel({
-            //     fields: aMissingFields.map(function(label) {
-            //         return { title: label };
-            //     })
-            // });
-            // this._oMissingFieldsDialog.setModel(oModel2);
-            
+            this.getView().setModel(oSampleModel, "SampleModel");            
 
             const oToday = new Date();
             this._setMinDate(this.getView().byId("arrivalDateInput"), oToday);
@@ -420,7 +411,7 @@ sap.ui.define([
                         }
                     },
 
-                    _showMissingFieldsFragment: function(aMissingFields) {
+        _showMissingFieldsFragment: function(aMissingFields) {
                         const oView = this.getView();
                     
                         if (!this._oMissingFieldsDialog) {
@@ -439,7 +430,7 @@ sap.ui.define([
                     },
                     
 
-                    onCloseMissingFieldsDialog: function() {
+        onCloseMissingFieldsDialog: function() {
                         this._oMissingFieldsDialog.close();
                     },
 
