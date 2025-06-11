@@ -436,77 +436,119 @@ sap.ui.define([
 
        
 
-        onReviewPress1: function() {
-            var oWizardReviewPage = this.getView().byId("wizardReviewPage");
-            oWizardReviewPage.setVisible(true);
-        
-            var oWizard = this.getView().byId("wizard");
-            var oWizardStep1 = oWizard.getSteps()[0];
-            var oWizardStep2 = oWizard.getSteps()[1];
-        
-            // Validate required fields in WizardStep1
-            var bValidStep1 = this.validateWizardStep1(oWizardStep1);
-            // Validate required fields in WizardStep2
-            var bValidStep2 = this.validateWizardStep2(oWizardStep2);
-        
-            // If any of the steps are invalid, do not proceed
-            if (!bValidStep1 || !bValidStep2) {
-                MessageToast.show("Please fill all required fields before proceeding to review."); // Notify user
-                return;
-            }
-        
-            // If all fields are valid, collect data and show the review page
-            this.collectDataForReview();
-            this.showReviewPage();
-        },
-        
-        
-        validateWizardStep1: function(oWizardStep) {
-            var aControls = oWizardStep.getContent();
-            var bValid = true;
-        
-            aControls.forEach(function(oControl) {
-                if (oControl instanceof sap.ui.core.Input || oControl instanceof sap.ui.core.ComboBox) {
-                    if (oControl.getRequired() && !oControl.getValue()) {
-                        oControl.setValueState("Error");
-                        bValid = false;
-                    } else {
-                        oControl.setValueState("None");
-                    }
-                }
-            });
-        
-            return bValid;
-        },
-        
-        validateWizardStep2: function(oWizardStep) {
-            var aControls = oWizardStep.getContent();
-            var bValid = true;
-        
-            aControls.forEach(function(oControl) {
-                if (oControl.getRequired()) {
-                    if (!oControl.getValue()) {
-                        oControl.setValueState("Error");
-                        bValid = false;
-                    } else {
-                        oControl.setValueState("None");
-                    }
-                }
-            });
-        
-            return bValid;
-        },
-        
-        
-        showReviewPage: function() {
-            var oReviewPage = this.getView().byId("wizardReviewPage");
-            if (!oReviewPage) {
-                oReviewPage = sap.ui.xmlview("ReviewPage");
-                this.getView().addDependent(oReviewPage);
-            }
-        
-            oReviewPage.setVisible(true);
-        },
+       
+
+                    onReviewPress: function () {
+                        var oWizard = this.getView().byId("wizard");
+                        var oNavContainer = this.getView().byId("NavContainer"); // Get the NavContainer
+                        var oWizardReviewPage = this.getView().byId("wizardReviewPage");
+            
+                        // Validate required fields in WizardStep1
+                        var bValidStep1 = this.validateWizardStep1(this.getView().byId("step1"));
+            
+                        // Validate required fields in WizardStep2
+                        var bValidStep2 = this.validateWizardStep2(this.getView().byId("OrderInventory"));
+            
+                        // If any of the steps are invalid, do not proceed
+                        if (!bValidStep1 || !bValidStep2) {
+                            MessageToast.show("Please fill all required fields before proceeding to review."); // Notify user
+                            return;
+                        }
+            
+                        // If all fields are valid, collect data and show the review page
+                        this.collectDataForReview(); // Assuming this function exists and collects data
+            
+                        // Navigate to the review page
+                        oNavContainer.to(oWizardReviewPage);
+                    },
+            
+                    validateWizardStep1: function (oWizardStep) {
+                        var aControls = oWizardStep.getContent()[0].getItems(); // Access controls within the VBox and HBox structure
+                        var bValid = true;
+                        var that = this;
+            
+                        aControls.forEach(function (oHBox) {
+                            if (oHBox instanceof sap.m.HBox) {
+                                oHBox.getItems().forEach(function (oVBox) {
+                                    if (oVBox instanceof sap.m.VBox) {
+                                        var aVBoxItems = oVBox.getItems();
+                                        var oLabel = aVBoxItems[0];
+                                        var oInput = aVBoxItems[1];
+            
+                                        if (oLabel && oLabel.getRequired()) {
+                                            var sValue = "";
+                                            if (oInput instanceof sap.m.Input || oInput instanceof sap.m.TextArea) {
+                                                sValue = oInput.getValue();
+                                            } else if (oInput instanceof sap.m.ComboBox) {
+                                                sValue = oInput.getSelectedKey();
+                                            } else if (oInput instanceof sap.m.DatePicker) {
+                                                sValue = oInput.getValue();
+                                            }
+            
+                                            if (!sValue) {
+                                                oInput.setValueState("Error");
+                                                oInput.setValueStateText("This field is required");
+                                                bValid = false;
+                                            } else {
+                                                oInput.setValueState("None");
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+            
+                        return bValid;
+                    },
+            
+                    validateWizardStep2: function (oWizardStep) {
+                        var oTable = oWizardStep.getContent()[0].getContent()[0]; // Access the table
+                        var aItems = oTable.getItems();
+                        var bValid = true;
+                        var that = this;
+            
+                        aItems.forEach(function (oItem) {
+                            var aCells = oItem.getCells();
+                            // Validate Order Quantity and Storage Conditions
+                            var oOrderQuantityInput = aCells[3];
+                            var oStorageConditionsInput = aCells[4];
+            
+                            if (!oOrderQuantityInput.getValue()) {
+                                oOrderQuantityInput.setValueState("Error");
+                                oOrderQuantityInput.setValueStateText("Order Quantity is required");
+                                bValid = false;
+                            } else {
+                                oOrderQuantityInput.setValueState("None");
+                            }
+            
+                            if (!oStorageConditionsInput.getValue()) {
+                                oStorageConditionsInput.setValueState("Error");
+                                oStorageConditionsInput.setValueStateText("Storage Conditions is required");
+                                bValid = false;
+                            } else {
+                                oStorageConditionsInput.setValueState("None");
+                            }
+                        });
+            
+                        return bValid;
+                    },
+            
+                    collectDataForReview: function () {
+                        // Implement your data collection logic here
+                        // This function should read the values from the input fields
+                        // and update the model for the review page.
+                        // Example:
+                        // var oModel = this.getView().getModel("InputItemsModel");
+                        // var oData = oModel.getData();
+                        // oData.ReviewData = { ... collected data ... };
+                        // oModel.setData(oData);
+                    },
+            
+                    showReviewPage: function () {
+                        var oNavContainer = this.getView().byId("NavContainer");
+                        var oWizardReviewPage = this.getView().byId("wizardReviewPage");
+                        oNavContainer.to(oWizardReviewPage);
+                    },            
         
         
         

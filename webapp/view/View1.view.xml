@@ -9,299 +9,299 @@
     xmlns:upload="sap.m.upload"
     xmlns:u="sap.ui.unified"
     xmlns:form="sap.ui.layout.form"
-
-
 >
-    <Page
-        id="page"
-        title="Alcami"
-    >
-        <Wizard id="wizard" complete="onReviewPress">
-            <!-- Step 1 -->
-            <WizardStep
-                id="step1"
-                title="Inbound Order Header"
-                validated="true">
 
-                <VBox class="sapUiSmallMargin">
+    <NavContainer id="NavContainer" initialPage="page">
+        <Page
+            id="page"
+            title="Alcami"
+        >
+            <Wizard id="wizard" complete="onReviewPress">
+                <!-- Step 1 -->
+                <WizardStep
+                    id="step1"
+                    title="Inbound Order Header"
+                    validated="true">
 
-                    <!-- Row 1 Input Fields (Customer, Project, Refference Number ) -->
-                    <HBox justifyContent="SpaceBetween">
+                    <VBox class="sapUiSmallMargin">
 
-                    <!-- Customer Input Field -->
-                        <VBox width="30%">
-                            <Label text="Customer" required="true" />
-                            <Input id="customer" width="100%" placeholder="Enter Customer ID" value="{InputItemsModel>/CustomerNumber}"/>
-                        </VBox>
+                        <!-- Row 1 Input Fields (Customer, Project, Refference Number ) -->
+                        <HBox justifyContent="SpaceBetween">
 
-                    <!-- Project Input Field -->
-                        <VBox width="30%">
-                            <Label text="Project" required="true" />
-                            <Input id="projectInput" placeholder="Project" width="100%" showValueHelp="true" valueHelpRequest=".onOpenValueHelp" value="{InputItemsModel>/ProjectName}"/>
-                        </VBox>
+                            <!-- Customer Input Field -->
+                            <VBox width="30%">
+                                <Label text="Customer" required="true" />
+                                <Input id="customer" width="100%" placeholder="Enter Customer ID" value="{InputItemsModel>/CustomerNumber}"/>
+                            </VBox>
 
-                    <!-- Reference Number Input Field -->
-                        <VBox width="30%"> <Label text="Reference Number" />
-                            <Input id="referenceInput" placeholder="Reference Number" width="100%" value="{InputItemsModel>/ReferenceNumber}" />
-                        </VBox>
+                            <!-- Project Input Field -->
+                            <VBox width="30%">
+                                <Label text="Project" required="true" />
+                                <Input id="projectInput" placeholder="Project" width="100%" showValueHelp="true" valueHelpRequest=".onOpenValueHelp" value="{InputItemsModel>/ProjectName}"/>
+                            </VBox>
 
-                    </HBox>
+                            <!-- Reference Number Input Field -->
+                            <VBox width="30%"> <Label text="Reference Number" />
+                                <Input id="referenceInput" placeholder="Reference Number" width="100%" value="{InputItemsModel>/ReferenceNumber}" />
+                            </VBox>
 
-                    <!-- Row 2 Input Fields(Carrier, Arrival, Ship From) -->
-                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                        </HBox>
 
-                    <!-- Carrier ComboBox -->
-                        <VBox width="30%">
-                            <Label text="Carrier" required="true" />
-                            <ComboBox
-                                id="carrierInput"
-                                placeholder="Select Carrier"
-                                required="true"
-                                width="100%"
-                                change=".onCarrierChange"
-                                selectedKey="{InputItemsModel>/CarrierName}">
-                                <items>
-                                    <core:Item key="Alcami Courier" text="Alcami Courier" />
-                                    <core:Item key="ups_air" text="UPS Air" />
-                                    <core:Item key="ups_ground" text="UPS Ground" />
-                                    <core:Item key="ups_freight" text="UPS Freight" />
-                                    <core:Item key="fedex_ground" text="FedEx Ground" />
-                                    <core:Item key="fedex_freight" text="FedEx Freight" />
-                                    <core:Item key="fedex_express" text="FedEx Express" />
-                                    <core:Item key="fedex_custom" text="FedEx Custom Critical" />
-                                    <core:Item key="fedex_priority" text="FedEx International Priority" />
-                                    <core:Item key="world_courier" text="World Courier" />
-                                    <core:Item key="marken" text="Marken" />
-                                    <core:Item key="biocair" text="Biocair" />
-                                    <core:Item key="pickup" text="Customer Pickup" />
-                                    <core:Item key="other" text="Other" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
+                        <!-- Row 2 Input Fields(Carrier, Arrival, Ship From) -->
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
 
-                    <!-- Arrival Data Picker -->
-                        <VBox width="30%">
-                            <Label text="Arrival Date" required="true" />
-                            <DatePicker
-                                id="arrivalDateInput"
-                                placeholder="Arrival Date"
-                                width="100%"
-                                change=".onArrivalDateChange"
-                                value="{InputItemsModel>/SelectedDate}"
-                            />
-                        </VBox>
+                            <!-- Carrier ComboBox -->
+                            <VBox width="30%">
+                                <Label text="Carrier" required="true" />
+                                <ComboBox
+                                    id="carrierInput"
+                                    placeholder="Select Carrier"
+                                    required="true"
+                                    width="100%"
+                                    change=".onCarrierChange"
+                                    selectedKey="{InputItemsModel>/CarrierName}">
+                                    <items>
+                                        <core:Item key="Alcami Courier" text="Alcami Courier" />
+                                        <core:Item key="ups_air" text="UPS Air" />
+                                        <core:Item key="ups_ground" text="UPS Ground" />
+                                        <core:Item key="ups_freight" text="UPS Freight" />
+                                        <core:Item key="fedex_ground" text="FedEx Ground" />
+                                        <core:Item key="fedex_freight" text="FedEx Freight" />
+                                        <core:Item key="fedex_express" text="FedEx Express" />
+                                        <core:Item key="fedex_custom" text="FedEx Custom Critical" />
+                                        <core:Item key="fedex_priority" text="FedEx International Priority" />
+                                        <core:Item key="world_courier" text="World Courier" />
+                                        <core:Item key="marken" text="Marken" />
+                                        <core:Item key="biocair" text="Biocair" />
+                                        <core:Item key="pickup" text="Customer Pickup" />
+                                        <core:Item key="other" text="Other" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
 
-                    <!-- Ship Input Fields -->
-                        <VBox width="30%">
-                            <Label text="Ship From" required="true" />
-                            <Input
-                                id="shipFromInput"
-                                placeholder="Ship From"
-                                width="100%"
-                                value="{InputItemsModel>/ShipFromAddress}"
-                            />
-                        </VBox>
+                            <!-- Arrival Data Picker -->
+                            <VBox width="30%">
+                                <Label text="Arrival Date" required="true" />
+                                <DatePicker
+                                    id="arrivalDateInput"
+                                    placeholder="Arrival Date"
+                                    width="100%"
+                                    change=".onArrivalDateChange"
+                                    value="{InputItemsModel>/SelectedDate}"
+                                />
+                            </VBox>
 
-                    </HBox>
-                </VBox>
+                            <!-- Ship Input Fields -->
+                            <VBox width="30%">
+                                <Label text="Ship From" required="true" />
+                                <Input
+                                    id="shipFromInput"
+                                    placeholder="Ship From"
+                                    width="100%"
+                                    value="{InputItemsModel>/ShipFromAddress}"
+                                />
+                            </VBox>
 
-                <!-- Document Uploader -->
-                <VBox class="sapUiSmallMargin">
-                    <VBox>
-                        <Label text="Attached Documents" design="Bold" id="uploadlabel1" />
-                        <Table id="fileTable1" items="{SampleModel>/AttachmentSet}" mode="MultiSelect" selectionChange=".onSelectionChange">
-                            <headerToolbar>
-                                <Toolbar>
-                                    <u:FileUploader 
-                                        id="attachmentid1" 
-                                        change=".onUploadDocuments" 
-                                        multiple="true" 
-                                        buttonOnly="true" 
-                                        tooltip="Upload your files" 
-                                    />
-                                    <ToolbarSpacer/>
-                                    <Button text="Delete" press=".onDeleteSelected"/>
-                                </Toolbar>
-                            </headerToolbar>
-                            <columns>
-                                <Column>
-                                    <Text text="File Name" />
-                                </Column>
-                                <Column>
-                                    <Text text="File Type"/>
-                                </Column>
-                            </columns>
-                            <items>
-                                <ColumnListItem>
-                                    <cells>
-                                        <Text text="{SampleModel>Filename}" />
-                                        <Text text="{SampleModel>Mimetype}"/>
-                                    </cells>
-                                </ColumnListItem>
-                            </items>
-                        </Table>
+                        </HBox>
                     </VBox>
 
-                    <!-- Row 1 -->
-                    <HBox class="sapUiLargeMarginTop" justifyContent="SpaceBetween">
-
-
-                        <VBox width="30%">
-                            <Label text="Shipping Temperature" required="true" />
-                            <ComboBox
-                                id="shippingTemperatureInput"
-                                width="100%"
-                                placeholder="Select Shipping Temperature"
-                                selectedKey="{InputItemsModel>/ShippingTemparature}"
-                            >
+                    <!-- Document Uploader -->
+                    <VBox class="sapUiSmallMargin">
+                        <VBox>
+                            <Label text="Attached Documents" design="Bold" id="uploadlabel1" />
+                            <Table id="fileTable1" items="{SampleModel>/AttachmentSet}" mode="MultiSelect" selectionChange=".onSelectionChange">
+                                <headerToolbar>
+                                    <Toolbar>
+                                        <u:FileUploader
+                                            id="attachmentid1"
+                                            change=".onUploadDocuments"
+                                            multiple="true"
+                                            buttonOnly="true"
+                                            tooltip="Upload your files"
+                                        />
+                                        <ToolbarSpacer/>
+                                        <Button text="Delete" press=".onDeleteSelected"/>
+                                    </Toolbar>
+                                </headerToolbar>
+                                <columns>
+                                    <Column>
+                                        <Text text="File Name" />
+                                    </Column>
+                                    <Column>
+                                        <Text text="File Type"/>
+                                    </Column>
+                                </columns>
                                 <items>
-                                    <core:Item key="Unconditioned" text="Unconditioned" />
-                                    <core:Item key="NonQualified2to8" text="Non-Qualified 2°C to 8°C" />
-                                    <core:Item key="NonQualified15to25" text="Non-Qualified -15°C to -25°C" />
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{SampleModel>Filename}" />
+                                            <Text text="{SampleModel>Mimetype}"/>
+                                        </cells>
+                                    </ColumnListItem>
                                 </items>
-                            </ComboBox>
+                            </Table>
                         </VBox>
-                        <VBox width="30%">
-                            <Label text="Shipment Flexibility" required="true" />
-                            <ComboBox
-                                id="shipmentFlexibilityInput"
-                                width="100%"
-                                selectedKey="{InputItemsModel>/ShipmentFlexibility}"
-                            >
-                                <items>
-                                    <core:Item key="Critical" text="Critical - Date Not Flexible" />
-                                    <core:Item key="Flexible1Day" text="Flexible +/- 1 business day" />
-                                    <core:Item key="Flexible3Days" text="Flexible +/- 3 business days" />
-                                    <core:Item key="Flexible7Days" text="Flexible +/- 7 business days" />
-                                    <core:Item key="NoConstraints" text="Flexible - No Constraints" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                        <VBox width="30%">
-                            <Label text="Stability" />
-                            <ComboBox
-                                id="stability"
-                                width="100%"
-                                change=".onStabilityChange"
-                                selectedKey="{InputItemsModel>/Stability}"
-                            >
-                                <items>
-                                    <core:Item key="Yes" text="Yes" />
-                                    <core:Item key="no" text="No" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                    </HBox>
 
-                    <!-- Row 2 -->
-                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
-                        <VBox width="30%">
-                            <Label text="Shipping Material Provider" required="true" />
-                            <ComboBox
-                                id="shippingMaterialProviderInput"
-                                width="100%"
-                                selectedKey="{InputItemsModel>/ShippingMaterialProvider}"
-                            >
-                                <items>
-                                    <core:Item key="Carrier" text="Carrier" />
-                                    <core:Item key="Customer" text="Customer" />
-                                    <core:Item key="Alcami" text="Alcami" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                        <VBox width="30%">
-                            <Label text="Dimensions and Quantity of Shippers" required="true" />
-                            <Input
-                                id="dimensionsInput"
-                                placeholder="Select Dimensions"
-                                width="100%"
-                                value="{InputItemsModel>/DimensionsandQuanityofShippers}"
-                            />
-                        </VBox>
-                        <VBox width="30%">
-                            <Label text="Temperature Device Provider" required="true" />
-                            <ComboBox
-                                id="TemperatureDeviceProvider"
-                                width="100%"
-                                change=".onTemperatureDeviceProviderChange"
-                                selectedKey="{InputItemsModel>/TemperatureDeviceProvider}"
-                            >
-                                <items>
-                                    <core:Item key="Customer" text="Customer" />
-                                    <core:Item key="Carrier" text="Carrier" />
-                                    <core:Item key="NoneRequired" text="None Required" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                    </HBox>
+                        <!-- Row 1 -->
+                        <HBox class="sapUiLargeMarginTop" justifyContent="SpaceBetween">
 
-                    <!-- Row 3 -->
-                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
-                        <VBox width="30%">
-                            <Label text="Temperature Device Quantity" required="true" />
-                            <ComboBox
-                                id="TDQ"
-                                width="100%"
-                                selectedKey="{InputItemsModel>/TemperatureDeviceQuanitiy}"
-                            >
-                                <items>
-                                    <core:Item key="1PerShippingContainer" text="1 Per Shipping Container" />
-                                    <core:Item key="Other" text="Other, Enter into Special Instructions" />
-                                    <core:Item key="None" text="None Required" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                        <VBox width="30%">
-                            <Label text="Temperature Device Disposition" required="true" />
-                            <ComboBox
-                                id="TDD"
-                                width="100%"
-                                selectedKey="{InputItemsModel>/TemperatureDeviceDisposition}"
-                            >
-                                <items>
-                                    <core:Item key="AlcamitoDispose" text="Alcami to Dispose" />
-                                    <core:Item key="return" text="Return to Address listed in Special Instructions" />
-                                    <core:Item key="None" text="None Required" />
-                                </items>
-                            </ComboBox>
-                        </VBox>
-                        <VBox width="30%" />
-                    </HBox>
 
-                    <!-- Special Instructions Row -->
-                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
-                        <VBox width="80%">
-                            <Label text="Special Instructions" />
-                            <TextArea
-                                id="specialInstructionsInput"
-                                width="100%"
-                                placeholder="Enter any special instructions here"
-                                value="{InputItemsModel>/SpecialInstructions}"
+                            <VBox width="30%">
+                                <Label text="Shipping Temperature" required="true" />
+                                <ComboBox
+                                    id="shippingTemperatureInput"
+                                    width="100%"
+                                    placeholder="Select Shipping Temperature"
+                                    selectedKey="{InputItemsModel>/ShippingTemparature}"
+                                >
+                                    <items>
+                                        <core:Item key="Unconditioned" text="Unconditioned" />
+                                        <core:Item key="NonQualified2to8" text="Non-Qualified 2°C to 8°C" />
+                                        <core:Item key="NonQualified15to25" text="Non-Qualified -15°C to -25°C" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                            <VBox width="30%">
+                                <Label text="Shipment Flexibility" required="true" />
+                                <ComboBox
+                                    id="shipmentFlexibilityInput"
+                                    width="100%"
+                                    selectedKey="{InputItemsModel>/ShipmentFlexibility}"
+                                >
+                                    <items>
+                                        <core:Item key="Critical" text="Critical - Date Not Flexible" />
+                                        <core:Item key="Flexible1Day" text="Flexible +/- 1 business day" />
+                                        <core:Item key="Flexible3Days" text="Flexible +/- 3 business days" />
+                                        <core:Item key="Flexible7Days" text="Flexible +/- 7 business days" />
+                                        <core:Item key="NoConstraints" text="Flexible - No Constraints" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                            <VBox width="30%">
+                                <Label text="Stability" />
+                                <ComboBox
+                                    id="stability"
+                                    width="100%"
+                                    change=".onStabilityChange"
+                                    selectedKey="{InputItemsModel>/Stability}"
+                                >
+                                    <items>
+                                        <core:Item key="Yes" text="Yes" />
+                                        <core:Item key="no" text="No" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                        </HBox>
 
-                            />
-                        </VBox>
-                    </HBox>
+                        <!-- Row 2 -->
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                            <VBox width="30%">
+                                <Label text="Shipping Material Provider" required="true" />
+                                <ComboBox
+                                    id="shippingMaterialProviderInput"
+                                    width="100%"
+                                    selectedKey="{InputItemsModel>/ShippingMaterialProvider}"
+                                >
+                                    <items>
+                                        <core:Item key="Carrier" text="Carrier" />
+                                        <core:Item key="Customer" text="Customer" />
+                                        <core:Item key="Alcami" text="Alcami" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                            <VBox width="30%">
+                                <Label text="Dimensions and Quantity of Shippers" required="true" />
+                                <Input
+                                    id="dimensionsInput"
+                                    placeholder="Select Dimensions"
+                                    width="100%"
+                                    value="{InputItemsModel>/DimensionsandQuanityofShippers}"
+                                />
+                            </VBox>
+                            <VBox width="30%">
+                                <Label text="Temperature Device Provider" required="true" />
+                                <ComboBox
+                                    id="TemperatureDeviceProvider"
+                                    width="100%"
+                                    change=".onTemperatureDeviceProviderChange"
+                                    selectedKey="{InputItemsModel>/TemperatureDeviceProvider}"
+                                >
+                                    <items>
+                                        <core:Item key="Customer" text="Customer" />
+                                        <core:Item key="Carrier" text="Carrier" />
+                                        <core:Item key="NoneRequired" text="None Required" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                        </HBox>
 
-                    <!-- Date to Place Conditions Row -->
-                    <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
-                        <VBox id="dateToPlaceConditionsVBox" width="30%">
-                            <Label text="Date to Place Conditions" required="true" />
-                            <DatePicker
-                                id="dateToPlaceConditionsInput"
-                                placeholder="Select Date"
-                                width="100%"
-                                value="{InputItemsModel>/DatetoPlaceIntoCondition}"
-                            />
-                        </VBox>
-                    </HBox>
-                </VBox>
+                        <!-- Row 3 -->
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                            <VBox width="30%">
+                                <Label text="Temperature Device Quantity" required="true" />
+                                <ComboBox
+                                    id="TDQ"
+                                    width="100%"
+                                    selectedKey="{InputItemsModel>/TemperatureDeviceQuanitiy}"
+                                >
+                                    <items>
+                                        <core:Item key="1PerShippingContainer" text="1 Per Shipping Container" />
+                                        <core:Item key="Other" text="Other, Enter into Special Instructions" />
+                                        <core:Item key="None" text="None Required" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                            <VBox width="30%">
+                                <Label text="Temperature Device Disposition" required="true" />
+                                <ComboBox
+                                    id="TDD"
+                                    width="100%"
+                                    selectedKey="{InputItemsModel>/TemperatureDeviceDisposition}"
+                                >
+                                    <items>
+                                        <core:Item key="AlcamitoDispose" text="Alcami to Dispose" />
+                                        <core:Item key="return" text="Return to Address listed in Special Instructions" />
+                                        <core:Item key="None" text="None Required" />
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                            <VBox width="30%" />
+                        </HBox>
 
-            </WizardStep>
+                        <!-- Special Instructions Row -->
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                            <VBox width="80%">
+                                <Label text="Special Instructions" />
+                                <TextArea
+                                    id="specialInstructionsInput"
+                                    width="100%"
+                                    placeholder="Enter any special instructions here"
+                                    value="{InputItemsModel>/SpecialInstructions}"
 
-            <!-- Step 2 -->
+                                />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Date to Place Conditions Row -->
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginTop">
+                            <VBox id="dateToPlaceConditionsVBox" width="30%">
+                                <Label text="Date to Place Conditions" required="true" />
+                                <DatePicker
+                                    id="dateToPlaceConditionsInput"
+                                    placeholder="Select Date"
+                                    width="100%"
+                                    value="{InputItemsModel>/DatetoPlaceIntoCondition}"
+                                />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                </WizardStep>
+
+                <!-- Step 2 -->
                 <WizardStep id="OrderInventory" validated="true" title="Inbound Order Item Details">
                     <ScrollContainer width="100%" height="300px" horizontal="true" focusable="true">
-                        <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange=".onSelectedLineInventoryItems" mode="MultiSelect" height="100%">
+                        <Table items="{InputItemsModel>/InboundItemset}" id="OIMTable" selectionChange=".onSelectedLineInventoryItems" mode="MultiSelect" >
                             <headerToolbar>
                                 <OverflowToolbar>
                                     <ToolbarSpacer/>
@@ -345,132 +345,133 @@
                     </ScrollContainer>
                 </WizardStep>
 
-            
-</Wizard>
+
+            </Wizard>
+        </Page>
+
+        <!-- Review Page  -->
+        <Page id="wizardReviewPage" showHeader="true" title="Review Order Details">
+            <content>
+                <form:SimpleForm title="Inbound Headers" labelSpanXL="6" labelSpanL="4" labelSpanM="6" labelSpanS="12" editable="false"
+                    layout="ResponsiveGridLayout">
+                    <form:content>
+                        <Label text="Customer" required="true"/>
+                        <Text text="{InputItemsModel>/CustomerNumber}"/>
+                        <Label text="Project Name" required="true"/>
+                        <Text text="{InputItemsModel>/ProjectName}"/>
+                        <Label text="Reference Number" />
+                        <Text text="{InputItemsModel>/ReferenceNumber}"/>
+                        <Label text="Carrier Name" required="true"/>
+                        <Text text="{InputItemsModel>/CarrierName}"/>
+                        <Label text="SelectedDate" required="true"/>
+                        <Text text="{InputItemsModel>/SelectedDate}"/>
+                        <Label text="Ship From Address" required="true"/>
+                        <Text text="{InputItemsModel>/ShipFromAddress}"/>
+                        <Label text="Shipping Temperature" required="true"/>
+                        <Text text="{InputItemsModel>/ShippingTemparature}"/>
+                        <Label text="ShipmentFlexibility" required="true"/>
+                        <Text text="{InputItemsModel>/ShipmentFlexibility}"/>
+                        <Label text="Shipping Material Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Text text="{InputItemsModel>/ShippingMaterialProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Label text="Stability" />
+                        <Text text="{InputItemsModel>/Stability}"/>
+                        <Label text="Dimensions and Quantity of Shippers" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Text text="{InputItemsModel>/DimensionsandQuanityofShippers}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Label text="Temperature Device Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Text text="{InputItemsModel>/TemperatureDeviceProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
+                        <Label text="Temperature Device Quantity" required="true"/>
+                        <Text text="{InputItemsModel>/TemperatureDeviceQuanitiy}"/>
+                        <Label text="Temperature Device Disposition" required="true"/>
+                        <Text text="{InputItemsModel>/TemperatureDeviceDisposition}"/>
+                        <Label text="Special Instruction for ShipCondition" />
+                        <Text text="{Input ItemsModel>/SpecialInstructions}"/>
+                        <Label text="DatetoPlaceIntoCondition" required="true" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
+                        <Text text="{InputItemsModel>/DatetoPlaceIntoCondition}" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
+
+                    </form:content>
+                </form:SimpleForm>
+
+                <Table items="{path: 'SampleModel>/AttachmentSet'}">
+                    <headerToolbar>
+                        <OverflowToolbar>
+                            <Title text="Attached Documents"/>
+                            <ToolbarSpacer/>
+                            <Button text="Edit"  press="editAttachedItems"/>
+                        </OverflowToolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="File Name"/>
+                        </Column>
+                        <Column>
+                            <Text text="File Type"/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{SampleModel>Filename}"/>
+                                <Text text="{SampleModel>Mimetype}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
 
 
-<!-- Review Page  -->
-        <Page id="wizardReviewPage" showHeader="true" title="Review Order Details" visible="false">
-                <content>
-                    <form:SimpleForm title="Inbound Headers" labelSpanXL="6" labelSpanL="4" labelSpanM="6" labelSpanS="12" editable="false"
-                        layout="ResponsiveGridLayout">
-                        <form:content>
-                            <Label text="Customer" required="true"/>
-                                <Text text="{InputItemsModel>/CustomerNumber}"/>
-                                <Label text="Project Name" required="true"/>
-                                <Text text="{InputItemsModel>/ProjectName}"/>
-                                <Label text="Reference Number" />
-                                <Text text="{InputItemsModel>/ReferenceNumber}"/>
-                                <Label text="Carrier Name" required="true"/>
-                                <Text text="{InputItemsModel>/CarrierName}"/>
-                                <Label text="SelectedDate" required="true"/>
-                                <Text text="{InputItemsModel>/SelectedDate}"/>
-                                <Label text="Ship From Address" required="true"/>
-                                <Text text="{InputItemsModel>/ShipFromAddress}"/>
-                                <Label text="Shipping Temperature" required="true"/>
-                                <Text text="{InputItemsModel>/ShippingTemparature}"/>
-                                <Label text="ShipmentFlexibility" required="true"/>
-                                <Text text="{InputItemsModel>/ShipmentFlexibility}"/>
-                                <Label text="Shipping Material Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Text text="{InputItemsModel>/ShippingMaterialProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Label text="Stability" />
-                                <Text text="{InputItemsModel>/Stability}"/>
-                                <Label text="Dimensions and Quantity of Shippers" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Text text="{InputItemsModel>/DimensionsandQuanityofShippers}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Label text="Temperature Device Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Text text="{InputItemsModel>/TemperatureDeviceProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                                <Label text="Temperature Device Quantity" required="true"/>
-                                <Text text="{InputItemsModel>/TemperatureDeviceQuanitiy}"/>
-                                <Label text="Temperature Device Disposition" required="true"/>
-                                <Text text="{InputItemsModel>/TemperatureDeviceDisposition}"/>
-                                <Label text="Special Instruction for ShipCondition" />
-                                <Text text="{InputItemsModel>/SpecialInstructions}"/>
-                                <Label text="DatetoPlaceIntoCondition" required="true" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
-                                <Text text="{InputItemsModel>/DatetoPlaceIntoCondition}" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
-
-                        </form:content>
-                    </form:SimpleForm>
-                    
-                    <Table items="{path: 'SampleModel>/AttachmentSet'}">
+                <ScrollContainer width="100%" horizontal="true" focusable="true">
+                    <Table items="{InputItemsModel>/InboundItemset}"  >
                         <headerToolbar>
                             <OverflowToolbar>
-                                <Title text="Attached Documents"/>
+                                <Title text="Inbound Items"/>
                                 <ToolbarSpacer/>
-                                <Button text="Edit"  press="editAttachedItems"/>
+                                <Button text="Edit"  press="editInboundItems"/>
                             </OverflowToolbar>
                         </headerToolbar>
                         <columns>
-                            <Column>
-                                <Text text="File Name"/>
+                            <Column hAlign="Begin" width="15rem">
+                                <Label text="Customer Material Number" wrapping="true"/>
                             </Column>
-                            <Column>
-                                <Text text="File Type"/>
+                            <Column hAlign="Begin" width="10rem">
+                                <Label text="Material Description" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="7rem">
+                                <Label text="UOM" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Order Quantity" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Storage Conditions" wrapping="true"/>
+                            </Column>
+                            <Column hAlign="Begin" width="8rem">
+                                <Label text="Notes" wrapping="true"/>
                             </Column>
                         </columns>
                         <items>
                             <ColumnListItem>
                                 <cells>
-                                    <Text text="{SampleModel>Filename}"/>
-                                    <Text text="{SampleModel>Mimetype}"/>
+                                    <Text text="{InputItemsModel>Customermaterial}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Materialdescription}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Uom}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>OrderQuantity}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>StorageConditions}" wrapping="true"/>
+                                    <Text text="{InputItemsModel>Notes}" wrapping="true"/>
                                 </cells>
                             </ColumnListItem>
                         </items>
                     </Table>
-
-
-                    <ScrollContainer width="100%" horizontal="true" focusable="true">
-                        <Table items="{InputItemsModel>/InboundItemset}"  >
-                            <headerToolbar>
-                                <OverflowToolbar>
-                                    <Title text="Inbound Items"/>
-                                    <ToolbarSpacer/>
-                                    <Button text="Edit"  press="editInboundItems"/>
-                                </OverflowToolbar>
-                            </headerToolbar>
-                            <columns>
-                                <Column hAlign="Begin" width="15rem">
-                                    <Label text="Customer Material Number" wrapping="true"/>
-                                </Column>
-                                <Column hAlign="Begin" width="10rem">
-                                    <Label text="Material Description" wrapping="true"/>
-                                </Column>
-                                <Column hAlign="Begin" width="7rem">
-                                    <Label text="UOM" wrapping="true"/>
-                                </Column>
-                                <Column hAlign="Begin" width="8rem">
-                                    <Label text="Order Quantity" wrapping="true"/>
-                                </Column>
-                                <Column hAlign="Begin" width="8rem">
-                                    <Label text="Storage Conditions" wrapping="true"/>
-                                </Column>
-                                <Column hAlign="Begin" width="8rem">
-                                    <Label text="Notes" wrapping="true"/>
-                                </Column>
-                            </columns>
-                            <items>
-                                <ColumnListItem>
-                                    <cells>
-                                        <Text text="{InputItemsModel>Customermaterial}" wrapping="true"/>
-                                        <Text text="{InputItemsModel>Materialdescription}" wrapping="true"/>
-                                        <Text text="{InputItemsModel>Uom}" wrapping="true"/>
-                                        <Text text="{InputItemsModel>OrderQuantity}" wrapping="true"/>
-                                        <Text text="{InputItemsModel>StorageConditions}" wrapping="true"/>
-                                        <Text text="{InputItemsModel>Notes}" wrapping="true"/>
-                                    </cells>
-                                </ColumnListItem>
-                            </items>
-                        </Table>
-                    </ScrollContainer>
-                </content>
-                <footer>
-                    <Bar>
-                        <contentRight>
-                            <Button text="Submit" press="handleWizardSubmit" type="Emphasized"/>
-                            <Button text="Cancel" press="handleWizardCancel"/>
-                        </contentRight>
-                    </Bar>
-                </footer>
-            </Page>
+                </ScrollContainer>
+            </content>
+            <footer>
+                <Bar>
+                    <contentRight>
+                        <Button text="Submit" press="handleWizardSubmit" type="Emphasized"/>
+                        <Button text="Cancel" press="handleWizardCancel"/>
+                    </contentRight>
+                </Bar>
+            </footer>
         </Page>
-        
+
+    </NavContainer>
+
 </mvc:View>
