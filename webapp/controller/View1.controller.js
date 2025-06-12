@@ -385,6 +385,7 @@ sap.ui.define([
                             { id: "shipFromInput", label: "Ship From" },
                             { id: "shippingTemperatureInput", label: "Shipping Temperature" },
                             { id: "shipmentFlexibilityInput", label: "Shipment Flexibility" },
+                            { id: "stability", label: "Stability" },
                             { id: "shippingMaterialProviderInput", label: "Shipping Material Provider" },
                             { id: "dimensionsInput", label: "Dimensions" },
                             { id: "TemperatureDeviceProvider", label: "Temperature Device Provider" },
