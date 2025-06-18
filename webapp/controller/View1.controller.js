@@ -141,6 +141,8 @@ sap.ui.define([
                 this._oInboundItemDialog = sap.ui.xmlfragment("alcami.view.fragment.InboundItem", this);
                 this.getView().addDependent(this._oInboundItemDialog);
             }
+            
+
             this._oInboundItemDialog.open();
         },
 
@@ -149,29 +151,39 @@ sap.ui.define([
             const oModel = this.getView().getModel("InputItemsModel");
             const aItems = oModel.getProperty("/InboundItemset");
             const aSelectedItems = oTable.getSelectedItems();
-
+        
             if (!oTable || !oModel) {
                 MessageToast.show("Table or model not found.");
                 return;
             }
-
+        
             if (aSelectedItems.length === 0) {
                 MessageToast.show("No items selected for deletion.");
                 return;
             }
-
-            aSelectedItems.forEach(oSelectedItem => {
+        
+            // Create a set of indices to delete
+            const aIndicesToDelete = aSelectedItems.map(oSelectedItem => {
                 const sPath = oSelectedItem.getBindingContext("InputItemsModel").getPath();
-                const iIndex = parseInt(sPath.substring(sPath.lastIndexOf('/') + 1));
-                if (!isNaN(iIndex)) {
+                return parseInt(sPath.substring(sPath.lastIndexOf('/') + 1), 10);
+            });
+        
+            // Sort indices in descending order to avoid index shifting issues
+            aIndicesToDelete.sort((a, b) => b - a);
+        
+            // Remove items from the model
+            aIndicesToDelete.forEach(iIndex => {
+                if (!isNaN(iIndex) && iIndex >= 0 && iIndex < aItems.length) {
                     aItems.splice(iIndex, 1);
                 }
             });
-
+        
+            // Update the model
             oModel.setProperty("/InboundItemset", aItems);
             oTable.removeSelections();
             MessageToast.show("Selected items deleted successfully.");
         },
+        
 
         onSelectedLineInventoryItems: function (oEvent) {
             const oSelectedItem = oEvent.getParameter("listItem");
@@ -206,36 +218,57 @@ sap.ui.define([
         InboundonAddPress: function () {
             const oModel = this.getView().getModel("InputItemsModel");
             const aItems = oModel.getProperty("/InboundItemset");
-            const sCustomerMaterialNumber = sap.ui.getCore().byId("customerMaterialInput").getValue();
-
-            if (!sCustomerMaterialNumber) {
-                MessageToast.show("Please enter or select a Customer Material Number.");
+            const aSelectedCustomerMaterialNumbers = sap.ui.getCore().byId("customerMaterialInput").getValue().split(",").map(item => item.trim());
+        
+            if (aSelectedCustomerMaterialNumbers.length === 0) {
+                MessageToast.show("Please enter or select Customer Material Numbers.");
                 return;
             }
-
+        
             const oMainModel = this.getView().getModel();
             const aCustomerMaterials = oMainModel.getProperty("/customerMaterial") || [];
-            const oMaterial = aCustomerMaterials.find(item => item.customerMaterialNumber === sCustomerMaterialNumber);
-
-            if (!oMaterial) {
-                MessageToast.show("Customer Material Number not found in data.");
-                return;
+            const existingCustomerMaterials = aItems.map(item => item.Customermaterial);
+        
+            const newItems = [];
+        
+            aSelectedCustomerMaterialNumbers.forEach(sCustomerMaterialNumber => {
+                if (!sCustomerMaterialNumber) return; // Skip empty values
+        
+                const oMaterial = aCustomerMaterials.find(item => item.customerMaterialNumber === sCustomerMaterialNumber);
+        
+                if (!oMaterial) {
+                    MessageToast.show(`Customer Material Number "${sCustomerMaterialNumber}" not found in data.`);
+                    return;
+                }
+        
+                if (existingCustomerMaterials.includes(sCustomerMaterialNumber)) {
+                    MessageToast.show(`Customer Material Number "${sCustomerMaterialNumber}" is already added.`);
+                    return;
+                }
+        
+                const oNewItem = {
+                    Customermaterial: sCustomerMaterialNumber,
+                    Materialdescription: oMaterial.materialDescription,
+                    Uom: oMaterial.uom,
+                    OrderQuantity: 0,
+                    StorageConditions: "",
+                    Notes: ""
+                };
+        
+                newItems.push(oNewItem);
+            });
+        
+            // Add new items to the model if there are any
+            if (newItems.length > 0) {
+                aItems.push(...newItems);
+                oModel.setProperty("/InboundItemset", aItems);
+                this._oInboundItemDialog.close();
+                MessageToast.show("Items added successfully.");
+            } else {
+                MessageToast.show("No new items to add.");
             }
-
-            const oNewItem = {
-                Customermaterial: sCustomerMaterialNumber,
-                Materialdescription: oMaterial.materialDescription,
-                Uom: oMaterial.uom,
-                OrderQuantity: 0,
-                StorageConditions: "",
-                Notes: ""
-            };
-
-            aItems.push(oNewItem);
-            oModel.setProperty("/InboundItemset", aItems);
-            this._oInboundItemDialog.close();
-            MessageToast.show("Item added successfully.");
         },
+        
 
         onInboundItemCancel: function () {
             if (this._oInboundItemDialog) {
