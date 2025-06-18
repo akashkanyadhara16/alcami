@@ -37,7 +37,7 @@
                             <!-- Project Input Field -->
                             <VBox width="30%">
                                 <Label text="Project" required="true" />
-                                <Input id="projectInput" placeholder="Project" width="100%" showValueHelp="true" valueHelpRequest=".onOpenValueHelp" value="{InputItemsModel>/ProjectName}" />
+                                <Input id="projectInput" placeholder="Project" width="100%" showValueHelp="true" valueHelpRequest=".onOpenValueHelp" value="{InputItemsModel>/ProjectName}"/>
                             </VBox>
 
                             <!-- Reference Number Input Field -->

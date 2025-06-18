@@ -9,33 +9,24 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("alcami.controller.View1", {
-
-        // 0. INIT: Initialize the controller and set up models and default values
         onInit: function () {
             const oModel = new JSONModel();
             oModel.loadData("/model/data.json", null, false);
             this.getView().setModel(oModel);
 
-            var oModel1 = new JSONModel({
-                InboundItemset: []
-            });
-            this.getView().setModel(oModel1, "InputItemsModel");
+            const oInputItemsModel = new JSONModel({ InboundItemset: [] });
+            this.getView().setModel(oInputItemsModel, "InputItemsModel");
 
-            const oSampleModel = new JSONModel({
-                "AttachmentSet": []
-            });
-            this.getView().setModel(oSampleModel, "SampleModel");            
+            const oSampleModel = new JSONModel({ "AttachmentSet": [] });
+            this.getView().setModel(oSampleModel, "SampleModel");
 
             const oToday = new Date();
             this._setMinDate(this.getView().byId("arrivalDateInput"), oToday);
             this._setMinDate(this.getView().byId("dateToPlaceConditionsInput"), oToday);
 
-            this.getView().byId("customer").setValue("C001"); // Set default customer value
-
-
+            this.getView().byId("customer").setValue("C001");
         },
 
-        // 1. onOpenValueHelp: Opens the project value help dialog and applies filters based on customer input
         onOpenValueHelp: function () {
             if (!this._oValueHelpDialog) {
                 this._oValueHelpDialog = sap.ui.xmlfragment("alcami.view.fragment.ProjectSelection", this);
@@ -43,16 +34,10 @@ sap.ui.define([
             }
             const sCustomerInputValue = this.getView().byId("customer").getValue();
             const oBinding = this._oValueHelpDialog.getBinding("items");
-            if (sCustomerInputValue) {
-                const oFilter = new Filter("CustomerID", FilterOperator.EQ, sCustomerInputValue);
-                oBinding.filter([oFilter]);
-            } else {
-                oBinding.filter([]); // Clear filters if no customer input
-            }
-            this._oValueHelpDialog.open(); // Open the dialog
+            oBinding.filter(sCustomerInputValue ? [new Filter("CustomerID", FilterOperator.EQ, sCustomerInputValue)] : []);
+            this._oValueHelpDialog.open();
         },
 
-        // 2. onCarrierChange: Handles changes in the Carrier ComboBox and toggles visibility of related fields
         onCarrierChange: function (oEvent) {
             const sSelectedKey = oEvent.getSource().getSelectedKey();
             const oView = this.getView();
@@ -63,39 +48,34 @@ sap.ui.define([
             ]);
         },
 
-        // 3. onArrivalDateChange: Handles changes in the Arrival Date DatePicker
         onArrivalDateChange: function (oEvent) {
-            this._handleDateChange(oEvent); // Call helper function to handle date validation
+            this._handleDateChange(oEvent);
         },
 
-        // 4. onStabilityChange: Handles changes in the Stability ComboBox and toggles visibility of related fields
         onStabilityChange: function (oEvent) {
             const sSelectedKey = oEvent.getSource().getSelectedKey();
             const oVBox = this.getView().byId("dateToPlaceConditionsVBox");
             if (oVBox) {
-                oVBox.setVisible(sSelectedKey !== "no"); // Show or hide based on selection
+                oVBox.setVisible(sSelectedKey !== "no");
             }
         },
 
-        // 5. onTemperatureDeviceProviderChange: Handles changes in the Temperature Device Provider ComboBox
         onTemperatureDeviceProviderChange: function (oEvent) {
             const sSelectedKey = oEvent.getSource().getSelectedKey();
             const oTDQ = this.getView().byId("TDQ");
             if (sSelectedKey === "NoneRequired" && oTDQ) {
-                oTDQ.setSelectedKey("None"); // Set default value if "NoneRequired" is selected
+                oTDQ.setSelectedKey("None");
             }
         },
 
-        // 6. onUploadDocuments: Handles file uploads for attachments
         onUploadDocuments: function (oEvent) {
-            var aFiles = oEvent.getParameter("files");
-            var oModel = this.getView().getModel("SampleModel");
+            const aFiles = oEvent.getParameter("files");
+            const oModel = this.getView().getModel("SampleModel");
+            const aAttachments = oModel.getProperty("/AttachmentSet") || [];
 
-            var aAttachments = oModel.getProperty("/AttachmentSet") || [];
-
-            for (var i = 0; i < aFiles.length; i++) {
-                var file = aFiles[i];
-                var reader = new FileReader();
+            for (let i = 0; i < aFiles.length; i++) {
+                const file = aFiles[i];
+                const reader = new FileReader();
 
                 reader.onload = (function (file) {
                     return function (e) {
@@ -105,35 +85,33 @@ sap.ui.define([
                             Content: e.target.result,
                             Documentsize: file.size,
                         });
-                        oModel.setProperty("/AttachmentSet", aAttachments); // Update model with new attachments
+                        oModel.setProperty("/AttachmentSet", aAttachments);
                     };
                 })(file);
 
-                reader.readAsDataURL(file); // Read file as Base64
+                reader.readAsDataURL(file);
             }
-            MessageToast.show("Attachment Added"); // Notify user
-            this.onUploadCompleted(); // Call any additional completion logic
+            MessageToast.show("Attachment Added");
+            this.onUploadCompleted();
         },
 
-        // 7. onSelectionChange: Handles selection changes in the attachments table
         onSelectionChange: function (oEvent) {
             const oTable = oEvent.getSource();
             const aSelectedItems = oTable.getSelectedItems();
-            this.byId("deleteButton").setEnabled(aSelectedItems.length > 0); // Enable delete button if items are selected
+            this.byId("deleteButton").setEnabled(aSelectedItems.length > 0);
         },
 
-        // 8. onDeleteSelected: Deletes selected files from the attachments table
         onDeleteSelected: function () {
             const oTable = this.byId("fileTable1");
             if (!oTable) {
-                MessageToast.show("File table not found."); // Notify if table is not found
+                MessageToast.show("File table not found.");
                 return;
             }
             const aSelectedItems = oTable.getSelectedItems();
             if (aSelectedItems.length > 0) {
                 const oModel = this.getView().getModel("SampleModel");
                 if (!oModel) {
-                    MessageToast.show("SampleModel is not set."); // Notify if model is not set
+                    MessageToast.show("SampleModel is not set.");
                     return;
                 }
                 let aAttachments = oModel.getProperty("/AttachmentSet") || [];
@@ -143,123 +121,107 @@ sap.ui.define([
                     if (oContext) {
                         const oFile = oContext.getObject();
                         if (oFile && oFile.Filename) {
-                            aAttachments = aAttachments.filter(file => file.Filename !== oFile.Filename); // Remove selected files
+                            aAttachments = aAttachments.filter(file => file.Filename !== oFile.Filename);
                         }
                     } else {
                         console.error("Binding context is undefined for selected item.");
                     }
                 });
 
-                oModel.setProperty("/AttachmentSet", aAttachments); // Update model
-                this.byId("deleteButton").setEnabled(false); // Disable delete button
-                MessageToast.show("Selected files deleted."); // Notify user
+                oModel.setProperty("/AttachmentSet", aAttachments);
+                this.byId("deleteButton").setEnabled(false);
+                MessageToast.show("Selected files deleted.");
             } else {
-                MessageToast.show("No files selected for deletion."); // Notify if no files are selected
+                MessageToast.show("No files selected for deletion.");
             }
         },
 
-        // 9. onAddPress: Opens the inbound item dialog for adding new inventory items
         onAddPress: function () {
             if (!this._oInboundItemDialog) {
                 this._oInboundItemDialog = sap.ui.xmlfragment("alcami.view.fragment.InboundItem", this);
                 this.getView().addDependent(this._oInboundItemDialog);
             }
-            this._oInboundItemDialog.open(); // Open the dialog
+            this._oInboundItemDialog.open();
         },
 
-        // 10. onDeleteSelectedItems: Deletes selected inventory items from the table
         onDeleteSelectedItems: function () {
-            var oTable = this.byId("OIMTable");
-            var oModel = this.getView().getModel("InputItemsModel");
-            var aItems = oModel.getProperty("/InboundItemset");
-            var aSelectedItems = oTable.getSelectedItems();
-        
+            const oTable = this.byId("OIMTable");
+            const oModel = this.getView().getModel("InputItemsModel");
+            const aItems = oModel.getProperty("/InboundItemset");
+            const aSelectedItems = oTable.getSelectedItems();
+
             if (!oTable || !oModel) {
-                MessageToast.show("Table or model not found."); // Notify if table or model is not found
+                MessageToast.show("Table or model not found.");
                 return;
             }
-        
+
             if (aSelectedItems.length === 0) {
-                MessageToast.show("No items selected for deletion."); // Notify if no items are selected
+                MessageToast.show("No items selected for deletion.");
                 return;
             }
-        
-            // Remove selected items from the data model
-            aSelectedItems.forEach(function (oSelectedItem) {
-                var sPath = oSelectedItem.getBindingContext("InputItemsModel").getPath();
-                var iIndex = parseInt(sPath.substring(sPath.lastIndexOf('/') + 1));
+
+            aSelectedItems.forEach(oSelectedItem => {
+                const sPath = oSelectedItem.getBindingContext("InputItemsModel").getPath();
+                const iIndex = parseInt(sPath.substring(sPath.lastIndexOf('/') + 1));
                 if (!isNaN(iIndex)) {
-                    aItems.splice(iIndex, 1); // Remove item from array
+                    aItems.splice(iIndex, 1);
                 }
             });
-        
-            oModel.setProperty("/InboundItemset", aItems); // Update model
-            oTable.removeSelections(); // Clear selections
-        
-            MessageToast.show("Selected items deleted successfully."); // Notify user
+
+            oModel.setProperty("/InboundItemset", aItems);
+            oTable.removeSelections();
+            MessageToast.show("Selected items deleted successfully.");
         },
 
-        // 11. onSelectedLineInventoryItems: Handles selection of inventory items in the table
         onSelectedLineInventoryItems: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("listItem");
-            var oContext = oSelectedItem.getBindingContext("InputItemsModel");
-            var oData = oContext.getObject();
-            MessageToast.show("Selected: " + oData.Customermaterial); // Notify user of selected item
+            const oSelectedItem = oEvent.getParameter("listItem");
+            const oContext = oSelectedItem.getBindingContext("InputItemsModel");
+            const oData = oContext.getObject();
+            MessageToast.show("Selected: " + oData.Customermaterial);
         },
 
-        // --- Additional/Fragment-related Functions ---
-        // Handles date changes for the "To Place Conditions" DatePicker
         onDateToPlaceConditionsChange: function (oEvent) {
-            this._handleDateChange(oEvent); // Call helper function to handle date validation
+            this._handleDateChange(oEvent);
         },
 
-        // Handles search in the project value help dialog
         onProjectSearch: function (oEvent) {
             const sQuery = oEvent.getParameter("value");
             const aFilters = [];
             if (sQuery) {
-                aFilters.push(new Filter("ProjectName", FilterOperator.Contains, sQuery)); // Filter based on project name
+                aFilters.push(new Filter("ProjectName", FilterOperator.Contains, sQuery));
             }
             const oBinding = oEvent.getSource().getBinding("items");
-            oBinding.filter(aFilters); // Apply filters to binding
+            oBinding.filter(aFilters);
         },
 
-        // Handles closing of the project value help dialog
         onProjectVHClose: function (oEvent) {
             const oSelectedItem = oEvent.getParameter("selectedItem");
             if (oSelectedItem) {
                 const sProjectName = oSelectedItem.getTitle();
-                this.getView().byId("projectInput").setValue(sProjectName); // Set selected project name in input
-                MessageToast.show("Selected Project: " + sProjectName); // Notify user
+                this.getView().byId("projectInput").setValue(sProjectName);
+                MessageToast.show("Selected Project: " + sProjectName);
             }
         },
 
-        // Handles adding a new inbound item
         InboundonAddPress: function () {
             const oModel = this.getView().getModel("InputItemsModel");
             const aItems = oModel.getProperty("/InboundItemset");
-
             const sCustomerMaterialNumber = sap.ui.getCore().byId("customerMaterialInput").getValue();
+
             if (!sCustomerMaterialNumber) {
-                MessageToast.show("Please enter or select a Customer Material Number."); // Notify if input is empty
+                MessageToast.show("Please enter or select a Customer Material Number.");
                 return;
             }
-        
-            // Get main model that has data.json loaded
+
             const oMainModel = this.getView().getModel();
             const aCustomerMaterials = oMainModel.getProperty("/customerMaterial") || [];
-        
-            // Find matching material details for the entered customerMaterialNumber
-            const oMaterial = aCustomerMaterials.find(function(item) {
-                return item.customerMaterialNumber === sCustomerMaterialNumber;
-            });
-        
+            const oMaterial = aCustomerMaterials.find(item => item.customerMaterialNumber === sCustomerMaterialNumber);
+
             if (!oMaterial) {
-                MessageToast.show("Customer Material Number not found in data."); // Notify if material not found
+                MessageToast.show("Customer Material Number not found in data.");
                 return;
             }
-        
-            // Create new item with details from lookup and default values for others
+
             const oNewItem = {
                 Customermaterial: sCustomerMaterialNumber,
                 Materialdescription: oMaterial.materialDescription,
@@ -268,317 +230,325 @@ sap.ui.define([
                 StorageConditions: "",
                 Notes: ""
             };
-        
-            aItems.push(oNewItem); // Add new item to the array
-            oModel.setProperty("/InboundItemset", aItems); // Update model
-        
-            this._oInboundItemDialog.close(); // Close the dialog
-            MessageToast.show("Item added successfully."); // Notify user
+
+            aItems.push(oNewItem);
+            oModel.setProperty("/InboundItemset", aItems);
+            this._oInboundItemDialog.close();
+            MessageToast.show("Item added successfully.");
         },
 
-        // Handles cancel action in the inbound item dialog
         onInboundItemCancel: function () {
             if (this._oInboundItemDialog) {
-                this._oInboundItemDialog.close(); // Close the dialog
+                this._oInboundItemDialog.close();
             }
         },
 
-        // Opens the customer material value help dialog
         onCustomerMaterialValueHelp: function () {
             if (!this._customerMaterialDialog) {
                 this._customerMaterialDialog = sap.ui.xmlfragment("alcami.view.fragment.CustomerMaterialValueHelp", this);
                 this.getView().addDependent(this._customerMaterialDialog);
             }
-            this._customerMaterialDialog.open(); // Open the dialog
+            this._customerMaterialDialog.open();
         },
 
-        // Handles search in the customer material value help dialog
         onCustomerMaterialSearch: function (oEvent) {
             const sValue = oEvent.getParameter("value");
             const aFilters = [];
             if (sValue) {
-                aFilters.push(
-                    new Filter({
-                        filters: [
-                            new Filter("customerMaterialNumber", FilterOperator.Contains, sValue),
-                            new Filter("materialDescription", FilterOperator.Contains, sValue)
-                        ],
-                        and: false
-                    })
-                );
+                aFilters.push(new Filter({
+                    filters: [
+                        new Filter("customerMaterialNumber", FilterOperator.Contains, sValue),
+                        new Filter("materialDescription", FilterOperator.Contains, sValue)
+                    ],
+                    and: false
+                }));
             }
 
             const oBinding = oEvent.getSource().getBinding("items");
-            oBinding.filter(aFilters, "Application"); // Apply filters to binding
+            oBinding.filter(aFilters, "Application");
         },
 
-        // Opens the storage conditions value help dialog
         onStorageConditionsVH1: function () {
             if (!this._storageDialog) {
                 this._storageDialog = sap.ui.xmlfragment("alcami.view.fragment.storage", this);
                 this.getView().addDependent(this._storageDialog);
             }
-            this._storageDialog.open(); // Open the dialog
+            this._storageDialog.open();
         },
 
-        // Handles closing of the customer material value help dialog
         onCustomerMaterialVHClose: function (oEvent) {
             const aSelectedItems = oEvent.getParameter("selectedItems");
             if (aSelectedItems && aSelectedItems.length > 0) {
                 const aSelectedMaterialNumbers = aSelectedItems.map(oItem => oItem.getTitle());
-                MessageToast.show("Selected: " + aSelectedMaterialNumbers.join(", ")); // Notify user of selected items
+                MessageToast.show("Selected: " + aSelectedMaterialNumbers.join(", "));
 
                 const oInput = sap.ui.getCore().byId("customerMaterialInput");
                 if (oInput) {
-                    oInput.setValue(aSelectedMaterialNumbers.join(", ")); // Set selected values in input
+                    oInput.setValue(aSelectedMaterialNumbers.join(", "));
                 } else {
-                    console.error("customerMaterialInput not found."); // Log error if input not found
+                    console.error("customerMaterialInput not found.");
                 }
             }
         },
 
-        // Called when the Storage Conditions value help is opened
         onStorageConditionsVH: function (oEvent) {
-            // Save the reference to the input control that triggered the value help
             this._oInputField = oEvent.getSource();
-            console.log(this._oInputField);
-
             if (!this._oStorageConditionsDialog) {
                 this._oStorageConditionsDialog = sap.ui.xmlfragment("alcami.view.fragment.storage", this);
                 this.getView().addDependent(this._oStorageConditionsDialog);
             }
-            this._oStorageConditionsDialog.open(); // Open the dialog
+            this._oStorageConditionsDialog.open();
         },
 
-        // Called when the Storage Conditions value help is closed
         onStorageConditionVHClose: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("selectedItem");
+            const oSelectedItem = oEvent.getParameter("selectedItem");
             if (oSelectedItem) {
-                var sTitle = oSelectedItem.getTitle();
-                console.log(sTitle);
+                const sTitle = oSelectedItem.getTitle();
                 if (this._oInputField) {
-                    console.log(this._oInputField.setValue(sTitle));
-
-                    this._oInputField.setValue(sTitle); // Set the value of the input field
-                    
-                    MessageToast.show("Selected Storage Condition: " + sTitle); // Notify user
+                    this._oInputField.setValue(sTitle);
+                    MessageToast.show("Selected Storage Condition: " + sTitle);
                 } else {
-                    console.error("Input field reference is not set."); // Log error if reference is not set
+                    console.error("Input field reference is not set.");
                 }
             } else {
-                MessageToast.show("No item selected."); // Notify if no item was selected
+                MessageToast.show("No item selected.");
             }
-            this._oInputField = null; // Clear the reference
-            oEvent.getSource().getBinding("items").filter([]); // Clear filters
+            this._oInputField = null;
+            oEvent.getSource().getBinding("items").filter([]);
         },
 
-        onReviewPress: function() {
-                        var oView = this.getView();
-                        var bValid = true;
-                        var aMissingFields = [];
-
-                        var aRequiredFieldsStep1 = [
-                            { id: "customer", label: "Customer" },
-                            { id: "projectInput", label: "Project" },
-                            { id: "carrierInput", label: "Carrier" },
-                            { id: "arrivalDateInput", label: "Arrival Date" },
-                            { id: "shipFromInput", label: "Ship From" },
-                            { id: "shippingTemperatureInput", label: "Shipping Temperature" },
-                            { id: "shipmentFlexibilityInput", label: "Shipment Flexibility" },
-                            { id: "stability", label: "Stability" },
-                            { id: "shippingMaterialProviderInput", label: "Shipping Material Provider" },
-                            { id: "dimensionsInput", label: "Dimensions" },
-                            { id: "TemperatureDeviceProvider", label: "Temperature Device Provider" },
-                            { id: "TDQ", label: "TDQ" },
-                            { id: "TDD", label: "TDD" },
-                            { id: "dateToPlaceConditionsInput", label: "Date to Place Conditions" }
-                        ];
-
-                        aRequiredFieldsStep1.forEach(function(oFieldInfo) {
-                            var oField = oView.byId(oFieldInfo.id);
-                            if (!oField.getValue()) {
-                                oField.setValueState("Error");
-                                aMissingFields.push(oFieldInfo.label);
-                                bValid = false;
-                            } else {
-                                oField.setValueState("None");
-                            }
-                        });
-
-                        if (bValid) {
-                            this.onReviewPress1();
-                        } else {
-                            this._showMissingFieldsFragment(aMissingFields);
-                        }
-                    },
-
-        _showMissingFieldsFragment: function(aMissingFields) {
-                        const oView = this.getView();
-                    
-                        if (!this._oMissingFieldsDialog) {
-                            this._oMissingFieldsDialog = sap.ui.xmlfragment(oView.getId(), "alcami.view.fragment.MissingFieldsDialog", this);
-                            oView.addDependent(this._oMissingFieldsDialog);
-                        }
-                    
-                        const oModel = new sap.ui.model.json.JSONModel({
-                            fields: aMissingFields.map(function(label) {
-                                return { title: label };
-                            })
-                        });
-                        this._oMissingFieldsDialog.setModel(oModel);
-                    
-                        this._oMissingFieldsDialog.open();
-                    },
-                    
-
-        onCloseMissingFieldsDialog: function() {
-                        this._oMissingFieldsDialog.close();
-                    },
-
-       
-
-       
-
-                    onReviewPress: function () {
-                        var oWizard = this.getView().byId("wizard");
-                        var oNavContainer = this.getView().byId("NavContainer"); // Get the NavContainer
-                        var oWizardReviewPage = this.getView().byId("wizardReviewPage");
-            
-                        // Validate required fields in WizardStep1
-                        var bValidStep1 = this.validateWizardStep1(this.getView().byId("step1"));
-            
-                        // Validate required fields in WizardStep2
-                        var bValidStep2 = this.validateWizardStep2(this.getView().byId("OrderInventory"));
-            
-                        // If any of the steps are invalid, do not proceed
-                        if (!bValidStep1 || !bValidStep2) {
-                            MessageToast.show("Please fill all required fields before proceeding to review."); // Notify user
-                            return;
-                        }
-            
-                        // If all fields are valid, collect data and show the review page
-                        this.collectDataForReview(); // Assuming this function exists and collects data
-            
-                        // Navigate to the review page
-                        oNavContainer.to(oWizardReviewPage);
-                    },
-            
-                    validateWizardStep1: function (oWizardStep) {
-                        var aControls = oWizardStep.getContent()[0].getItems(); // Access controls within the VBox and HBox structure
-                        var bValid = true;
-                        var that = this;
-            
-                        aControls.forEach(function (oHBox) {
-                            if (oHBox instanceof sap.m.HBox) {
-                                oHBox.getItems().forEach(function (oVBox) {
-                                    if (oVBox instanceof sap.m.VBox) {
-                                        var aVBoxItems = oVBox.getItems();
-                                        var oLabel = aVBoxItems[0];
-                                        var oInput = aVBoxItems[1];
-            
-                                        if (oLabel && oLabel.getRequired()) {
-                                            var sValue = "";
-                                            if (oInput instanceof sap.m.Input || oInput instanceof sap.m.TextArea) {
-                                                sValue = oInput.getValue();
-                                            } else if (oInput instanceof sap.m.ComboBox) {
-                                                sValue = oInput.getSelectedKey();
-                                            } else if (oInput instanceof sap.m.DatePicker) {
-                                                sValue = oInput.getValue();
-                                            }
-            
-                                            if (!sValue) {
-                                                oInput.setValueState("Error");
-                                                oInput.setValueStateText("This field is required");
-                                                bValid = false;
-                                            } else {
-                                                oInput.setValueState("None");
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-                        });
-            
-                        return bValid;
-                    },
-            
-                    validateWizardStep2: function (oWizardStep) {
-                        var oTable = oWizardStep.getContent()[0].getContent()[0]; // Access the table
-                        var aItems = oTable.getItems();
-                        var bValid = true;
-                        var that = this;
-            
-                        aItems.forEach(function (oItem) {
-                            var aCells = oItem.getCells();
-                            // Validate Order Quantity and Storage Conditions
-                            var oOrderQuantityInput = aCells[3];
-                            var oStorageConditionsInput = aCells[4];
-            
-                            if (!oOrderQuantityInput.getValue()) {
-                                oOrderQuantityInput.setValueState("Error");
-                                oOrderQuantityInput.setValueStateText("Order Quantity is required");
-                                bValid = false;
-                            } else {
-                                oOrderQuantityInput.setValueState("None");
-                            }
-            
-                            if (!oStorageConditionsInput.getValue()) {
-                                oStorageConditionsInput.setValueState("Error");
-                                oStorageConditionsInput.setValueStateText("Storage Conditions is required");
-                                bValid = false;
-                            } else {
-                                oStorageConditionsInput.setValueState("None");
-                            }
-                        });
-            
-                        return bValid;
-                    },
-            
-                    collectDataForReview: function () {
-                        // Implement your data collection logic here
-                        // This function should read the values from the input fields
-                        // and update the model for the review page.
-                        // Example:
-                        // var oModel = this.getView().getModel("InputItemsModel");
-                        // var oData = oModel.getData();
-                        // oData.ReviewData = { ... collected data ... };
-                        // oModel.setData(oData);
-                    },
-            
-                    showReviewPage: function () {
-                        var oNavContainer = this.getView().byId("NavContainer");
-                        var oWizardReviewPage = this.getView().byId("wizardReviewPage");
-                        oNavContainer.to(oWizardReviewPage);
-                    },            
+        onReviewPress: function () {
+            const oView = this.getView();
+            const aMissingFields = [];
+            let bValid = true;
         
+            const sCarrierSelectedKey = oView.byId("carrierInput").getSelectedKey();
+            const StabilitySelectedKey = oView.byId("stability").getSelectedKey();
         
+            const aRequiredFieldsStep1 = [
+                { id: "customer", label: "Customer" },
+                { id: "projectInput", label: "Project" },
+                { id: "carrierInput", label: "Carrier" },
+                { id: "arrivalDateInput", label: "Arrival Date" },
+                { id: "shipFromInput", label: "Ship From" },
+                { id: "shippingTemperatureInput", label: "Shipping Temperature" },
+                { id: "shipmentFlexibilityInput", label: "Shipment Flexibility" },
+                { id: "stability", label: "Stability" },
+                { id: "shippingMaterialProviderInput", label: "Shipping Material Provider" },
+                { id: "dimensionsInput", label: "Dimensions" },
+                { id: "TemperatureDeviceProvider", label: "Temperature Device Provider" },
+                { id: "TDQ", label: "TDQ" },
+                { id: "TDD", label: "TDD" },
+                { id: "dateToPlaceConditionsInput", label: "Date to Place Conditions" }
+            ];
         
-                
+            aRequiredFieldsStep1.forEach(({ id, label }) => {
+                const oField = oView.byId(id);
+        
+                // Skip validation for specific fields if "Alcami Courier" is not selected
+                if (
+                    sCarrierSelectedKey !== "Alcami Courier" &&
+                    (id === "shippingMaterialProviderInput" ||
+                     id === "dimensionsInput" ||
+                     id === "TemperatureDeviceProvider")
+                ) {
+                    return;
+                }
+        
+                // Skip validation for "Date to Place Conditions" if Stability is not "Yes"
+                if (
+                    StabilitySelectedKey !== "Yes" &&
+                    id === "dateToPlaceConditionsInput"
+                ) {
+                    return;
+                }
+        
+                if (!oField.getValue()) {
+                    oField.setValueState("Error");
+                    aMissingFields.push(label);
+                    bValid = false;
+                } else {
+                    oField.setValueState("None");
+                }
+            });
+        
+            if (bValid) {
+                this.onReviewPress1();
+            } else {
+                this._showMissingFieldsFragment(aMissingFields);
+            }
+        },        
 
+        _showMissingFieldsFragment: function (aMissingFields) {
+            const oView = this.getView();
+            if (!this._oMissingFieldsDialog) {
+                this._oMissingFieldsDialog = sap.ui.xmlfragment(oView.getId(), "alcami.view.fragment.MissingFieldsDialog", this);
+                oView.addDependent(this._oMissingFieldsDialog);
+            }
 
-        // --- Private/Helper Functions ---
-        // Sets the minimum date for a DatePicker control
+            const oModel = new JSONModel({
+                fields: aMissingFields.map(label => ({ title: label }))
+            });
+            this._oMissingFieldsDialog.setModel(oModel);
+            this._oMissingFieldsDialog.open();
+        },
+
+        onCloseMissingFieldsDialog: function () {
+            this._oMissingFieldsDialog.close();
+        },
+
+        onReviewPress1: function () {
+            const oWizard = this.getView().byId("wizard");
+            const oNavContainer = this.getView().byId("NavContainer");
+            const oWizardReviewPage = this.getView().byId("wizardReviewPage");
+
+            const bValidStep1 = this.validateWizardStep1(this.getView().byId("step1"));
+            const bValidStep2 = this.validateWizardStep2(this.getView().byId("OrderInventory"));
+
+            if (!bValidStep1 || !bValidStep2) {
+                MessageToast.show("Please fill all required fields before proceeding to review.");
+                return;
+            }
+
+            this.collectDataForReview();
+            oNavContainer.to(oWizardReviewPage);
+        },
+
+        validateWizardStep1: function (oWizardStep) {
+            const aControls = oWizardStep.getContent()[0].getItems();
+            let bValid = true;
+
+            aControls.forEach(oHBox => {
+                if (oHBox instanceof sap.m.HBox) {
+                    oHBox.getItems().forEach(oVBox => {
+                        if (oVBox instanceof sap.m.VBox) {
+                            const aVBoxItems = oVBox.getItems();
+                            const oLabel = aVBoxItems[0];
+                            const oInput = aVBoxItems[1];
+
+                            if (oLabel && oLabel.getRequired()) {
+                                const sValue = oInput instanceof sap.m.Input || oInput instanceof sap.m.TextArea
+                                    ? oInput.getValue()
+                                    : oInput instanceof sap.m.ComboBox
+                                        ? oInput.getSelectedKey()
+                                        : oInput instanceof sap.m.DatePicker
+                                            ? oInput.getValue()
+                                            : "";
+
+                                if (!sValue) {
+                                    oInput.setValueState("Error");
+                                    oInput.setValueStateText("This field is required");
+                                    bValid = false;
+                                } else {
+                                    oInput.setValueState("None");
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            return bValid;
+        },
+
+        validateWizardStep2: function (oWizardStep) {
+            const oTable = oWizardStep.getContent()[0].getContent()[0];
+            const aItems = oTable.getItems();
+            let bValid = true;
+
+            aItems.forEach(oItem => {
+                const aCells = oItem.getCells();
+                const oOrderQuantityInput = aCells[3];
+                const oStorageConditionsInput = aCells[4];
+
+                if (!oOrderQuantityInput.getValue()) {
+                    oOrderQuantityInput.setValueState("Error");
+                    oOrderQuantityInput.setValueStateText("Order Quantity is required");
+                    bValid = false;
+                } else {
+                    oOrderQuantityInput.setValueState("None");
+                }
+
+                if (!oStorageConditionsInput.getValue()) {
+                    oStorageConditionsInput.setValueState("Error");
+                    oStorageConditionsInput.setValueStateText("Storage Conditions is required");
+                    bValid = false;
+                } else {
+                    oStorageConditionsInput.setValueState("None");
+                }
+            });
+
+            return bValid;
+        },
+
+        collectDataForReview: function () {
+            // Implement your data collection logic here
+        },
+
+        showReviewPage: function () {
+            const oNavContainer = this.getView().byId("NavContainer");
+            const oWizardReviewPage = this.getView().byId("wizardReviewPage");
+            oNavContainer.to(oWizardReviewPage);
+        },
+
+        editAttachedItems: function() {
+            // Get the NavContainer
+            var oNavContainer = this.byId("NavContainer");
+            // Navigate back to the page containing the wizard
+            oNavContainer.to(this.byId("page"));
+            // Get the Wizard control
+            var oWizard = this.byId("wizard");
+            // Get the WizardStep with id 'step1'
+            var oStep1 = this.byId("step1");
+            if (oWizard && oStep1) {
+              // Navigate Wizard to the first step where attached documents are
+              oWizard.goToStep(oStep1);
+            } else {
+              // Fallback: Log error if controls not found
+              jQuery.sap.log.error("Wizard or WizardStep not found");
+            }
+          },       
+
+          editInboundItems: function() {
+            // Get the NavContainer
+            var oNavContainer = this.byId("NavContainer");
+          
+            // Navigate back to the page containing the wizard
+            oNavContainer.to(this.byId("page"));
+          
+            // Get the Wizard control
+            var oWizard = this.byId("wizard");
+            // Get the WizardStep with id 'OrderInventory'
+            var oOrderInventoryStep = this.byId("OrderInventory");
+          
+            if (oWizard && oOrderInventoryStep) {
+              // Navigate Wizard to the Inbound Items step
+              oWizard.goToStep(oOrderInventoryStep);
+            } else {
+              // Log error if controls not found
+              jQuery.sap.log.error("Wizard or OrderInventory WizardStep not found");
+            }
+          },
+          
         _setMinDate: function (oDatePicker, oDate) {
             if (oDatePicker) {
-                oDatePicker.setMinDate(oDate); // Set minimum date
+                oDatePicker.setMinDate(oDate);
             }
         },
 
-        // Handles date validation for DatePicker controls
         _handleDateChange: function (oEvent) {
             const oDatePicker = oEvent.getSource();
             const oSelectedDate = oDatePicker.getDateValue();
             if (oSelectedDate && (oSelectedDate.getDay() === 0 || oSelectedDate.getDay() === 6)) {
-                MessageToast.show("Please select a date that is not a Saturday or Sunday."); // Notify if date is invalid
-                oDatePicker.setDateValue(null); // Clear the date value
+                MessageToast.show("Please select a date that is not a Saturday or Sunday.");
+                oDatePicker.setDateValue(null);
             }
         },
 
-        // Toggles visibility of controls based on a boolean value
         _toggleVisibility: function (bVisible, aControls) {
-            aControls.forEach(function (oControl) {
+            aControls.forEach(oControl => {
                 if (oControl && oControl.getParent()) {
-                    oControl.getParent().setVisible(bVisible); // Set visibility
+                    oControl.getParent().setVisible(bVisible);
                 }
             });
         }
