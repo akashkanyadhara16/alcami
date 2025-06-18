@@ -37,8 +37,16 @@
                             <!-- Project Input Field -->
                             <VBox width="30%">
                                 <Label text="Project" required="true" />
-                                <Input id="projectInput" placeholder="Project" width="100%" showValueHelp="true" valueHelpRequest=".onOpenValueHelp" value="{InputItemsModel>/ProjectName}"/>
+                                <Input 
+                                    id="projectInput" 
+                                    placeholder="Project" 
+                                    width="100%" 
+                                    showValueHelp="true" 
+                                    valueHelpRequest=".onOpenValueHelp"
+                                    value="{InputItemsModel>/ProjectName}" />
                             </VBox>
+
+
 
                             <!-- Reference Number Input Field -->
                             <VBox width="30%"> <Label text="Reference Number" />
@@ -373,7 +381,7 @@
                         <Text text="{InputItemsModel>/ShipmentFlexibility}"/>
                         <Label text="Shipping Material Provider" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
                         <Text text="{InputItemsModel>/ShippingMaterialProvider}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
-                        <Label text="Stability" />
+                        <Label text="Stability" required="true" />
                         <Text text="{InputItemsModel>/Stability}"/>
                         <Label text="Dimensions and Quantity of Shippers" required="true" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
                         <Text text="{InputItemsModel>/DimensionsandQuanityofShippers}" visible="{= ${InputItemsModel>/CarrierName} === 'Alcami Courier'}"/>
@@ -384,7 +392,7 @@
                         <Label text="Temperature Device Disposition" required="true"/>
                         <Text text="{InputItemsModel>/TemperatureDeviceDisposition}"/>
                         <Label text="Special Instruction for ShipCondition" />
-                        <Text text="{Input ItemsModel>/SpecialInstructions}"/>
+                        <Text text="{InputItemsModel>/SpecialInstructions}"/>
                         <Label text="DatetoPlaceIntoCondition" required="true" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
                         <Text text="{InputItemsModel>/DatetoPlaceIntoCondition}" visible="{= ${InputItemsModel>/Stability} === 'Yes'}"/>
 

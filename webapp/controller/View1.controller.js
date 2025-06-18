@@ -25,6 +25,42 @@ sap.ui.define([
             this._setMinDate(this.getView().byId("dateToPlaceConditionsInput"), oToday);
 
             this.getView().byId("customer").setValue("C001");
+
+            this._attachChangeEventListeners();
+
+        },
+
+        _attachChangeEventListeners: function () {
+            const aRequiredFields = [
+                "customer",
+                "projectInput",
+                "carrierInput",
+                "arrivalDateInput",
+                "shipFromInput",
+                "shippingTemperatureInput",
+                "shipmentFlexibilityInput",
+                "stability",
+                "shippingMaterialProviderInput",
+                "dimensionsInput",
+                "TemperatureDeviceProvider",
+                "TDQ",
+                "TDD",
+                "dateToPlaceConditionsInput"
+            ];
+        
+            aRequiredFields.forEach(fieldId => {
+                const oField = this.getView().byId(fieldId);
+                if (oField) {
+                    oField.attachChange(this._onFieldChange.bind(this, oField));
+                }
+            });
+        },
+        
+        _onFieldChange: function (oField) {
+            // Reset the value state to "None" when the user enters a value
+            if (oField.getValue()) {
+                oField.setValueState("None");
+            }
         },
 
         onOpenValueHelp: function () {
@@ -443,7 +479,7 @@ sap.ui.define([
                 return;
             }
 
-            this.collectDataForReview();
+            
             oNavContainer.to(oWizardReviewPage);
         },
 
@@ -514,9 +550,7 @@ sap.ui.define([
             return bValid;
         },
 
-        collectDataForReview: function () {
-            // Implement your data collection logic here
-        },
+        
 
         showReviewPage: function () {
             const oNavContainer = this.getView().byId("NavContainer");
